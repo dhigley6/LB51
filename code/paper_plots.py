@@ -7,6 +7,7 @@ import matplotlib.patheffects as path_effects
 import pickle
 
 import LB51_get_cal_data
+from xbloch import gaussian_xbloch_sim
 
 #import dummy_ax
 
@@ -98,6 +99,23 @@ def format_summary_plot(f, axs):
     plt.tight_layout(w_pad=0, h_pad=0.1, rect=(0, 0.03, 1, 1))
 
 def quant_plot():
+    measured = get_measured_stim_efficiency()
+    strengths, stim_efficiencies = gaussian_xbloch_sim.calculate_stim_efficiencies()
+    plt.figure(figsize=(3.37, 2.5))
+    plt.scatter(measured['short_fluences']/5, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
+    plt.scatter(measured['long_fluences']/25, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
+    plt.semilogx(strengths*1E15, np.array(stim_efficiencies)*100, color='k', label='Three Level\nSimulation')
+    plt.xlabel('Intensity (W/cm$^2$)')
+    plt.ylabel('Inelastic Stimulated Scattering Efficiency')
+    plt.xlim((1E10, 1E15))
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.savefig('2019_10_30_quant.eps', dpi=600)
+    format_quant_plot()
+    #plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
+    #plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
+
+def run_quant_ana():
     """Make plot of stimulated scattering strength versus incident intensity
     """
     short_data = LB51_get_cal_data.get_short_pulse_data()
@@ -120,17 +138,16 @@ def quant_plot():
         stim_strength = get_stim_efficiency(long_data[run_set])
         long_fluences.append(fluence)
         long_stim_strengths.append(stim_strength)
-    plt.figure(figsize=(3.37, 2.5))
-    plt.scatter(np.array(short_fluences)/5, 100*np.array(short_stim_strengths), c='b', label='5 fs')
-    plt.scatter(np.array(long_fluences)/25, 100*np.array(long_stim_strengths), c='r', label='25 fs')
     quant_data = {'short_fluences': np.array(short_fluences)*1E12,
                   'long_fluences': np.array(long_fluences)*1E12,
                   'short_efficiencies': 100*np.array(short_stim_strengths),
                   'long_efficiencies': 100*np.array(long_stim_strengths)}
     save_quant_data(quant_data)
-    format_quant_plot()
-    plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
-    plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
+
+def get_measured_stim_efficiency():
+    with open('../data/proc/stim_efficiency.pickle', 'rb') as f:
+        measured = pickle.load(f)
+    return measured
     
 def save_quant_data(quant_data):
     """Save quantified data
@@ -140,7 +157,7 @@ def save_quant_data(quant_data):
     
 def format_quant_plot():
     plt.xlabel('Intensity (10$^{12}$ W/cm$^2$)')
-    plt.ylabel('Stimulated Inelastic\nScattering Efficiency (%)')
+    plt.ylabel('Stim. Scattering\nEfficiency (%)')
     plt.legend(loc='best', frameon=True)
     plt.tight_layout()
 

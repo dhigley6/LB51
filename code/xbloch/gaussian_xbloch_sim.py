@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-from new_xsim import xbloch2020
+from xbloch import xbloch2020
 
 FIELD_1E15 = 8.68E10   # Electric field strength in V/m that corresponds to
 # 10^15 W/cm^2
@@ -34,11 +34,11 @@ def simulate_gauss_series():
         print(f'Completed {str(strength)}')
     data = {'strengths': STRENGTHS,
             'sim_results': sim_results}
-    with open('data.pickle', 'wb') as f:
+    with open('xbloch/results/gauss.pickle', 'wb') as f:
         pickle.dump(data, f)
 
 def load_gauss_series():
-    with open('data.pickle', 'rb') as f:
+    with open('xbloch/results/gauss.pickle', 'rb') as f:
         data = pickle.load(f)
     return data
 
