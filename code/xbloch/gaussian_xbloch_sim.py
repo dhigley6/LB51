@@ -69,6 +69,4 @@ def calculate_stim_efficiencies():
         stim_strength = np.trapz(change_from_linear[stim_region])
         stim_efficiency = stim_strength/abs_strength
         stim_efficiencies.append(stim_efficiency)
-    plt.figure()
-    plt.semilogx(strengths*1E15, stim_efficiencies)
     return strengths, stim_efficiencies
