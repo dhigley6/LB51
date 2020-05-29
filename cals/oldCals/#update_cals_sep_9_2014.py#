@@ -1,0 +1,233 @@
+import numpy as np
+import iccd
+
+# !!! Add average splitting?
+
+# Shift 3
+
+cals86 = {'runs': '86-96',
+          'sample': 'Co/Pd',
+          'iccdBGRun': 78,
+          'shear': 0.306,
+          'samSpecROI': (530, 560, 200, 1000),
+          'noSamSpecROI': (480, 495, 200, 1000),
+          'widthX': 16.1,
+          'widthY': 12.9,
+          'L3EdgePixelMax': None,
+          'eVPerPixel': None,
+          'pnccdBGRun': None,
+          'pnccdGain': None}
+iccd.change_cals(86, cals86)
+
+cals99 = {'runs': '99-120, 136-147, 149-156',
+          'sample': 'Co/Pd',
+          'iccdBGRun': 98,
+          'shear': 0.306,
+          'samSpecROI': (530, 560, 200, 1000),
+          'noSamSpecROI': (480, 495, 200, 1000),
+          'widthX': 16.1,
+          'widthY': 12.9,
+          'L3EdgePixelMax': None,
+          'eVPerPixel': None,
+          'pnccdBGRun': None,
+          'pnccdGain': None}
+iccd.change_cals(99, cals99)
+
+cals166 = {'runs': '166-174',
+           'sample': 'NP CoO'}
+iccd.change_cals(166, cals166)
+
+cals177 = {}
+iccd.change_cals(177, cals177)
+
+# Shift 4
+
+cals211 = {'runs': None,
+           'sample': 'Plain CoO'}
+iccd.change_cals(211, cals211)
+
+cals290 = {'runs': '290-324',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 289,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 16.1,
+           'widthY': 12.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(290, cals290)
+
+cals331 = {'runs': '331-356',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 326,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 16.1,
+           'widthY': 12.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(331, cals331)
+
+cals359 = {'runs': '359-385',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 357,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 16.1,
+           'widthY': 12.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(359, cals359)
+
+cals388 = {'runs': '388-414',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 387,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 16.1,
+           'widthY': 12.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(388, cals388)
+
+cals416 = {'runs': '416-436',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 387,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 16.1,
+           'widthY': 12.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(416, cals416)
+
+cals438 = {'runs': '438-443',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 415,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 16.1,
+           'widthY': 12.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(438, cals438)
+
+# Shift 5
+
+cals454 = {'runs': '454-463, 465-472',
+           'sample': 'NP CoO'}
+iccd.change_cals(454, cals454)
+
+cals476 = {'runs': '476-477',
+           'sample': 'NP CoO'}
+iccd.change_cals(476, cals476)
+
+cals481 = {'runs': None,
+           'sample': 'NP CoO'}
+iccd.change_cals(481, cals481)
+
+cals503 = {'runs': None,
+           'sample': 'NP CoO'}
+iccd.change_cals(503, cals503)
+
+cals510 = {'runs': '510-536',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 547,
+           'shear': 0.306,
+           'samSpecROI': (527, 563, 200, 1000),
+           'noSamSpecROI': (486, 498, 200, 1000),
+           'widthX': 20.63,
+           'widthY': 155.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(510, cals510)
+
+cals548 = {'runs': '548-551',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 547,
+           'shear': 0.306,
+           'samSpecROI': (530, 565, 200, 1000),           
+           'noSamSpecROI': (485, 500, 200, 1000),
+           'widthX': 20.63,
+           'widthY': 155.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(548, cals548)
+
+cals554 = {'runs': '554-581',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 553,
+           'shear': 0.306,
+           'samSpecROI': (538, 562, 200, 1000),
+           'noSamSpecROI': (488, 498, 200, 1000),
+           'widthX': 20.63,
+           'widthY': 155.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(554, cals554)
+
+cals583 = {'runs': '583-601',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 553,
+           'shear': 0.306,
+           'samSpecROI': (538, 562, 200, 1000),
+           'noSamSpecROI': (488, 498, 200, 1000),
+           'widthX': 20.63,
+           'widthY': 155.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(583, cals583)
+
+cals603 = {'runs': '603-638, 647-670',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 646,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 20.63,
+           'widthY': 155.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(603, cals603)
+
+cals641 = {'runs': '641-643',
+           'sample': 'Co/Pd',
+           'iccdBGRun': 640,
+           'shear': 0.306,
+           'samSpecROI': (530, 560, 200, 1000),
+           'noSamSpecROI': (480, 495, 200, 1000),
+           'widthX': 20.63,
+           'widthY': 155.9,
+           'L3EdgePixelMax': None,
+           'eVPerPixel': None,
+           'pnccdBGRun': None,
+           'pnccdGain': None}
+iccd.change_cals(641, cals641)
