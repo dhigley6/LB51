@@ -21,8 +21,6 @@ def quant():
     plt.ylabel('Inelastic Stimulated Scattering Efficiency')
     plt.xlim((1E10, 1E15))
     plt.legend(loc='best')
-    plt.tight_layout()
-    plt.savefig('2019_10_30_quant.eps', dpi=600)
     format_quant_plot()
     #plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
     #plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
