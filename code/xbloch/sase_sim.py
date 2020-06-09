@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 HBAR = 4.1357 # Planck's constant (eV*fs) (from Wikipedia)
 
 def simulate_gaussian(pulse_duration=2, E0=778, bw=3, pulse_energy=1):
-    """Simulate a SASE pulse
+    """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
     Photon energy units: eV
     time units: fs
     Pulse energy units: J
@@ -18,7 +18,7 @@ def simulate_gaussian(pulse_duration=2, E0=778, bw=3, pulse_energy=1):
     """
     delta_omega = 0.01*2*np.pi/pulse_duration
     delta_E =  HBAR*delta_omega # Photon energy sampling
-    E = np.arange(E0-bw*100, E0+bw*100, delta_E) # photon energies
+    E = np.arange(E0-bw*500, E0+bw*500, delta_E) # photon energies
     intensity_envelope = np.exp(-(E-E0)**2/(2*bw**2))
     intensity_envelope = intensity_envelope/np.sum(intensity_envelope)
     t, _ = _convert_phot_to_time(E, E)
