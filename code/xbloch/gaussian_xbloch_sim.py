@@ -44,7 +44,7 @@ def load_gauss_series():
 
 def run_gauss_sim(strength=0.1E2, duration=0.33, times=np.linspace(-10, 20, int(1E4))):
     system = xbloch2020.make_model_system()
-    E_in = FIELD_1E15*np.sqrt(strength)*gauss(times, 0, sigma=duration)
+    E_in = 1j*FIELD_1E15*np.sqrt(strength)*gauss(times, 0, sigma=duration)
     sim_result = system.run_simulation(times, E_in)
     return sim_result
 

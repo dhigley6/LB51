@@ -28,19 +28,19 @@ DIPOLE = (8.03E-12+0j)*1.602E-19
 Co_L3_BROAD = 0.43    # Natural lifetime of Co 2p_{3/2} core hole
 # Thickness of sample
 #THICKNESS = 1E-9    # thickness of sample in m
-THICKNESS = 5E-10
+THICKNESS = 5E-11
 
 def make_model_system():
     """Make model system for 3-level simulations at Co L3 resonance of Co metal
     """
-    model_system = LambdaBloch(0, 778, 1.5, DIPOLE, np.sqrt(3)*DIPOLE, 778/HBAR)
+    model_system = LambdaBloch(0, 778, 2, DIPOLE, 1*np.sqrt(3)*DIPOLE, 778/HBAR)
     return model_system
 
 class LambdaBloch:
     """Calculate evolution of density matrix elements for Lambda coupling
     """
 
-    def __init__(self, E1, E2, E3, d12, d23, omega, gamma_a=0.43, phi=0):
+    def __init__(self, E1, E2, E3, d12, d23, omega, gamma_a=0.43):
         self.omega = omega
         self._detunings = [
             0,
@@ -54,7 +54,6 @@ class LambdaBloch:
             [0, 0, 0],
             [0, 0, 0]
         ], dtype=complex)
-        self.phi = phi
         self.gamma = np.zeros((3, 3, 3, 3))
         self.gamma[0, 0, 1, 1] = -1*gamma_a
         self.gamma[1, 1, 1, 1] = gamma_a
@@ -70,7 +69,7 @@ class LambdaBloch:
             's': [],
             'polarization_envelope': []
         }
-        self._update_history(0)
+        #self._update_history(0)
 
     def run_simulation(self, times, field_envelope_list):
         delta_ts = np.diff(times)
@@ -103,9 +102,9 @@ class LambdaBloch:
         self._rabi12 = -1*self.d12*field_envelope/HBAR_EVOLVE
         self._rabi23 = -1*self.d23*field_envelope/HBAR_EVOLVE
         self.W = np.array([
-            [self._detunings[0], 0.5*self._rabi12*np.exp(-1j*self.phi), 0],
-            [0.5*np.conj(self._rabi12)*np.exp(1j*self.phi), self._detunings[1], 0.5*self._rabi23*np.exp(1j*self.phi)],
-            [0, 0.5*np.conj(self._rabi23)*np.exp(-1j*self.phi), self._detunings[2]]
+            [self._detunings[0], 0.5*np.conj(self._rabi12), 0],
+            [0.5*self._rabi12, self._detunings[1], 0.5*self._rabi23],
+            [0, 0.5*np.conj(self._rabi23), self._detunings[2]]
         ])
 
     def _update_history(self, field_envelope):
