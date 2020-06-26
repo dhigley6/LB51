@@ -19,7 +19,7 @@ FIELD_1E15 = 8.68E10   # Electric field strength in V/m that corresponds to
 HBAR = 6.582E-1    # eV*fs
 HBAR_EVOLVE = 1.055E-19   # J*fs
 EPSILON_0 = 8.854188E-12    # C/(Vm)
-C = 3E8*1E-15    #(m/fs)
+C = 2.99792E8*1E-15    #(m/fs) (speed of light)
 DENSITY = 90.9*1E27      # (atoms/m^3)
 
 # Model material parameters:
