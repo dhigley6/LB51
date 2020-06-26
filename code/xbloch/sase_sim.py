@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 HBAR = 4.1357 # Planck's constant (eV*fs) (from Wikipedia)
 FWHM2SIGMA = 1.0/2.3548 # Gaussian conversion factor (from Wolfram Mathworld)
 
-def simulate_gaussian(pulse_duration=5, E0=778, bw=8, pulse_energy=1):
+def simulate_gaussian(pulse_duration=5, E0=777, bw=4, pulse_energy=1):
     """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
     Photon energy units: eV
     time units: fs
@@ -18,14 +18,17 @@ def simulate_gaussian(pulse_duration=5, E0=778, bw=8, pulse_energy=1):
     Intensity units: J/cm^2/eV (for frequency domain)
     """
     duration_sigma = pulse_duration*FWHM2SIGMA
+    bw_sigma = bw*FWHM2SIGMA
     times = np.linspace(-100, 100, int(1E4))
     E, _ = _convert_time_to_phot(times, times)
-    intensity_envelope = np.exp(-(E-E0)**2/(2*bw**2))
-    intensity_envelope = intensity_envelope/np.sum(intensity_envelope)
+    frequency_envelope = np.exp(-(E-E0)**2/(2*bw_sigma**2))
+    frequency_envelope = frequency_envelope/np.sum(frequency_envelope)
+    plt.figure()
+    plt.plot(E, frequency_envelope)
     t, _ = _convert_phot_to_time(E, E)
-    temporal_window = np.exp(-1*(t)**2/(2*duration_sigma**2))
-    temporal_window = temporal_window*len(t)/np.sum(temporal_window)
-    t, t_y = simulate(E, intensity_envelope, t, temporal_window, pulse_energy)
+    temporal_envelope = np.exp(-1*(t)**2/(2*duration_sigma**2))
+    temporal_envelope = temporal_envelope*len(t)/np.sum(temporal_envelope)
+    t, t_y = simulate(E, frequency_envelope, t, temporal_envelope, pulse_energy)
     return t, t_y
 
 def simulate(E, E_intensity_envelope, t, t_intensity_envelope, pulse_energy=1):

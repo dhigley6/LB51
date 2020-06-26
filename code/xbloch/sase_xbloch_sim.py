@@ -59,6 +59,7 @@ def calculate_stim_efficiencies():
         phot_result = sim_result.phot_results_
         spec_difference = (np.abs(phot_result['E_out'])**2-np.abs(phot_result['E_in'])**2)/(strengths[i])
         plt.figure()
+        plt.plot(phot_result['phots'], np.abs(phot_result['E_in'])**2)
         plt.plot(phot_result['phots'], spec_difference)
         stim_region = (phot_result['phots'] > STIM_LIMITS[0]) & (phot_result['phots'] < STIM_LIMITS[1])
         change_from_linear = spec_difference-linear_difference
