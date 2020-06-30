@@ -69,7 +69,6 @@ class LambdaBloch:
             's': [],
             'polarization_envelope': []
         }
-        #self._update_history(0)
 
     def run_simulation(self, times, field_envelope_list):
         delta_ts = np.diff(times)

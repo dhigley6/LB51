@@ -21,35 +21,12 @@ STRENGTHS = np.append(1E-8, STRENGTHS)
 ABS_LIMITS = (777, 779)        # Region of absorption (in eV above 778 eV)
 STIM_LIMITS = (775, 777)    # Region of stimulated inelastic scattering (in eV above 778 eV)
 
-def simulate_sase_series(save=True):
-    """Simulate and save series of SASE X-ray pulses interacting with 3-level atoms
-    """
-    sim_results = []
-    times, E_in = sase_sim.simulate_gaussian()
-    plt.figure()
-    plt.plot(times, np.abs(E_in)**2)
-    for strength in STRENGTHS:
-        sim_result = run_sase_sim(times, E_in, strength)
-        sim_results.append(sim_result)
-        print(f'Completed {str(strength)}')
-    data = {'strengths': STRENGTHS,
-            'sim_results': sim_results}
-    if save:
-        with open('xbloch/results/sase.pickle', 'wb') as f:
-            pickle.dump(data, f)
-    return data
-
-def load_sase_series():
-    with open('xbloch/results/sase.pickle', 'rb') as f:
-        data = pickle.load(f)
-    return data
-
 def simulate_multipulse_sase_series(n_pulses=2):
     """Simulate and save series of n_pulses SASE pulses interacting with 3-level atoms
     """
     results = []
     for _ in range(n_pulses):
-        result = simulate_sase_series(save=False)
+        result = _simulate_sase_series()
         results.append(result)
     with open('xbloch/results/multipulse_sase.pickle', 'wb') as f:
         pickle.dump(results, f)
@@ -59,15 +36,26 @@ def load_multipulse_sase_series():
         data = pickle.load(f)
     return data
 
-def run_sase_sim(times, E_in, strength=1E-3, duration=5):
+def _simulate_sase_series():
+    """Simulate increasing intensity series of SASE X-ray pulses interacting with 3-level atoms
+    """
+    sim_results = []
+    times, E_in = sase_sim.simulate_gaussian()
+    for strength in STRENGTHS:
+        sim_result = _run_sase_sim(times, E_in, strength)
+        sim_results.append(sim_result)
+        print(f'Completed {str(strength)}')
+    data = {'strengths': STRENGTHS,
+            'sim_results': sim_results}
+    return data
+
+def _run_sase_sim(times, E_in, strength=1E-3, duration=5):
+    """Run single pulse SASE simulation
+    """
     system = xbloch2020.make_model_system()
     E_in = FIELD_1E15*np.sqrt(strength)*E_in
     sim_result = system.run_simulation(times, E_in)
     return sim_result
-
-def calculate_stim_efficiencies():
-    data = load_sase_series()
-    strengths, stim_efficiencies = calculate_stim_single_pulse(data)
 
 def calculate_stim_single_pulse(data):
     strengths = data['strengths']
@@ -87,7 +75,7 @@ def calculate_stim_single_pulse(data):
         stim_efficiencies.append(stim_efficiency)
     return strengths, stim_efficiencies
 
-def calculate_multipulse_stim_efficiencies():
+def calculate_multipulse_stim():
     data_set = load_multipulse_sase_series()
     stim_efficiencies_list = []
     for data in data_set:
