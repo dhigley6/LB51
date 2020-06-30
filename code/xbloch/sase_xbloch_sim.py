@@ -44,7 +44,7 @@ def load_sase_series():
         data = pickle.load(f)
     return data
 
-def simulate_multipulse_sase_series(n_pulses=10):
+def simulate_multipulse_sase_series(n_pulses=2):
     """Simulate and save series of n_pulses SASE pulses interacting with 3-level atoms
     """
     results = []
