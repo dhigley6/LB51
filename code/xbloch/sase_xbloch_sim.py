@@ -26,6 +26,8 @@ def simulate_sase_series():
     """
     sim_results = []
     times, E_in = sase_sim.simulate_gaussian()
+    plt.figure()
+    plt.plot(times, np.abs(E_in)**2)
     for strength in STRENGTHS:
         sim_result = run_sase_sim(times, E_in, strength)
         sim_results.append(sim_result)
