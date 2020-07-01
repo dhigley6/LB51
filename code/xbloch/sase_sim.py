@@ -12,7 +12,7 @@ HBAR = 6.582E-1 # Planck's constant (eV*fs) (from Wikipedia)
 FWHM2SIGMA = 1.0/2.3548 # Gaussian conversion factor (from Wolfram Mathworld)
 
 # time points over which to simulate gaussian envelope SASE pulses (fs):
-TIMES = np.linspace(-20, 20, int(1E4))
+TIMES = np.linspace(-50, 50, int(1E4))
 
 def simulate_gaussian(pulse_duration=5.0, E0=777.0, bw=4.0, pulse_fluence=1.0):
     """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
@@ -43,7 +43,7 @@ def simulate_gaussian(pulse_duration=5.0, E0=777.0, bw=4.0, pulse_fluence=1.0):
     t, t_y = _simulate(E, frequency_envelope, TIMES, temporal_envelope, pulse_fluence)
     return t, t_y
 
-def _simulate(E, E_intensity_envelope, t, t_intensity_envelope, pulse_energy=1):
+def _simulate(E, E_intensity_envelope, t, t_intensity_envelope, pulse_fluence=1):
     """Simulate a SASE pulse with input spectral and temporal envelopes
     """
     spectral_amplitude_envelope = np.sqrt(E_intensity_envelope)
@@ -51,16 +51,16 @@ def _simulate(E, E_intensity_envelope, t, t_intensity_envelope, pulse_energy=1):
     spectrum = spectral_amplitude_envelope*np.exp(spectral_phases*1j)
     t = phot_fft_utils.convert_phots_to_times(E)
     t_y = phot_fft_utils.convert_phot_signal_to_time_signal(spectrum)
-    t_y = t_y*np.sqrt(len(t_y))  # normalize so that sum of intensities equals 1
     t_amplitude_envelope = np.sqrt(t_intensity_envelope)   
     t_y = t_y*t_amplitude_envelope
-    t_y = _normalize_pulse(t, t_y, pulse_energy)
+    t_y = _normalize_pulse(t, t_y, pulse_fluence)
     return t, t_y
 
-def _normalize_pulse(t, t_y, pulse_energy=1000):
-    """Normalize pulse so that average integrated intensity equals pulse energy
-    (assumes that input average summed intensity samples equals 1)
+def _normalize_pulse(t, t_y, pulse_fluence=1000):
+    """Normalize pulse to specified fluence
     """
+    integral = np.trapz(np.abs(t_y)**2, x=t)
+    t_y = t_y/integral
     spacing = t[1]-t[0]
     t_y = t_y*np.sqrt(pulse_energy/spacing)
     return t_y

@@ -49,11 +49,11 @@ def _simulate_sase_series():
             'sim_results': sim_results}
     return data
 
-def _run_sase_sim(times, E_in, strength=1E-3, duration=5):
+def _run_sase_sim(times, E_in, strength=1E-3):
     """Run single pulse SASE simulation
     """
     system = xbloch2020.make_model_system()
-    E_in = FIELD_1E15*np.sqrt(strength)*E_in
+    E_in = E_in*np.sqrt(strength)
     sim_result = system.run_simulation(times, E_in)
     return sim_result
 
