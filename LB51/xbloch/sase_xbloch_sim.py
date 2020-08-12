@@ -15,7 +15,7 @@ FIELD_1E15 = 8.68E10   # Electric field strength in V/m that corresponds to
 # 10^15 W/cm^2 or 1 J/cm^2/fs
 
 # Simulation parameters:
-STRENGTHS = np.logspace(-3, 0, 10)     # Intensities of incident X-ray pulses (in 10^15 W/cm^2)
+STRENGTHS = np.logspace(-3, 0, 10)     # Fluences of incident X-ray pulses (in 10^15 W/cm^2)
 STRENGTHS = np.append(1E-8, STRENGTHS)
 
 ABS_LIMITS = (777, 779)        # Region of absorption (in eV above 778 eV)

@@ -60,9 +60,7 @@ def _normalize_pulse(t, t_y, pulse_fluence=1000):
     """Normalize pulse to specified fluence
     """
     integral = np.trapz(np.abs(t_y)**2, x=t)
-    t_y = t_y/integral
-    spacing = t[1]-t[0]
-    t_y = t_y*np.sqrt(pulse_energy/spacing)
+    t_y = t_y*np.sqrt(pulse_fluence)/np.sqrt(integral)
     return t_y
 
 def test_gauss_simulations():
