@@ -12,7 +12,8 @@ set_plot_params.init_paper_small()
 
 def quant():
     measured = get_measured_stim_efficiency()
-    strengths, stim_efficiencies = sase_xbloch_sim.calculate_multipulse_stim()
+    #strengths, stim_efficiencies = sase_xbloch_sim.calculate_multipulse_stim()
+    strengths, stim_efficiencies = gaussian_xbloch_sim.calculate_stim_efficiencies()
     plt.figure(figsize=(3.37, 2.5))
     plt.scatter(measured['short_fluences']/5, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
     plt.scatter(measured['long_fluences']/25, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')

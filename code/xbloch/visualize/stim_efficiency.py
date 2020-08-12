@@ -4,7 +4,7 @@
 import matplotlib.pyplot as plt
 import pickle
 
-from new_xsim import gaussian_xbloch_sim
+from xbloch import gaussian_xbloch_sim
 
 def make_figure():
     strengths, stim_efficiencies = gaussian_xbloch_sim.calculate_stim_efficiencies()

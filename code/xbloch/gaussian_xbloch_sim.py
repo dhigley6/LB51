@@ -20,8 +20,8 @@ STRENGTHS = np.logspace(-3, 0, 10)     # Intensities of incident X-ray pulses (i
 STRENGTHS = np.append(1E-8, STRENGTHS)
 DURATION = 0.33        # Duration of incident X-ray pulses (in fs)
 TIMES = np.linspace(-100, 100, int(1E4))    # Times over which to run samples (in fs)
-ABS_LIMITS = (777, 779)        # Region of absorption (in eV above 778 eV)
-STIM_LIMITS = (775, 777)    # Region of stimulated inelastic scattering (in eV above 778 eV)
+ABS_LIMITS = (777, 779)        # Region of absorption (eV)
+STIM_LIMITS = (775, 777)    # Region of stimulated inelastic scattering (eV)
 
 
 def simulate_gauss_series():
