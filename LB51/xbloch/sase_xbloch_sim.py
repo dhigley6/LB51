@@ -29,6 +29,7 @@ def simulate_multipulse_sase_series(n_pulses=2):
     for _ in range(n_pulses):
         result = _simulate_sase_series()
         results.append(result)
+        strengths, stim_efficiencies = calculate_multipulse_stim(results)
     with open("LB51/xbloch/results/multipulse_sase.pickle", "wb") as f:
         pickle.dump(results, f)
 
@@ -88,11 +89,16 @@ def calculate_stim_single_pulse(data):
     return strengths, stim_efficiencies
 
 
-def calculate_multipulse_stim():
-    data_set = load_multipulse_sase_series()
+def calculate_multipulse_stim(data_set):
+    #data_set = load_multipulse_sase_series()
     stim_efficiencies_list = []
     for data in data_set:
         strengths, stim_efficiencies = calculate_stim_single_pulse(data)
         stim_efficiencies_list.append(stim_efficiencies)
     stim_efficiencies = np.mean(stim_efficiencies_list, axis=0)
     return strengths, stim_efficiencies
+
+def load_multipulse_stim():
+    data = 
+    with open("LB51/xbloch/results/multipulse_sase.pickle", "rb") as f:
+        data = pickle.load(f)
