@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 
-import LB51_get_cal_data
-from manuscript_plots import set_plot_params
+from LB51 import LB51_get_cal_data
+from LB51.manuscript_plots import set_plot_params
 set_plot_params.init_paper_small()
 
 def summary():
@@ -46,8 +46,8 @@ def summary():
     axs[0, 0].plot(emission['x']-0.4, -1*emission['y']+0.2, label='Emission')
     axs[0, 1].plot(emission['x']-0.4, -1*emission['y']+0.2, label='Emission')
     format_summary_plot(f, axs)
-    plt.savefig('../plots/2020_03_22_summary.eps', dpi=600)
-    plt.savefig('../plots/2020_03_22_summary.png', dpi=600)
+    #plt.savefig('plots/2020_03_22_summary.eps', dpi=600)
+    #plt.savefig('plots/2020_03_22_summary.png', dpi=600)
     
 def format_summary_plot(f, axs):
     def place_vlines():
@@ -92,7 +92,7 @@ def format_summary_plot(f, axs):
     plt.tight_layout(w_pad=0, h_pad=0.1, rect=(0, 0.03, 1, 1))
 
 def get_emission():
-    data = np.genfromtxt('../data/measuredEmissionPoints3.txt')
+    data = np.genfromtxt('data/measuredEmissionPoints3.txt')
     emission = {'x': data[:, 0],
                 'y': data[:, 1]}
     return emission

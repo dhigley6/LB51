@@ -6,7 +6,7 @@ free-electron laser pulse statistics" (2010)
 import numpy as np
 import matplotlib.pyplot as plt
 
-from xbloch import phot_fft_utils
+from LB51.xbloch import phot_fft_utils
 
 HBAR = 6.582E-1 # Planck's constant (eV*fs) (from Wikipedia)
 FWHM2SIGMA = 1.0/2.3548 # Gaussian conversion factor (from Wolfram Mathworld)
@@ -20,7 +20,7 @@ def simulate_gaussian(pulse_duration=5.0, E0=777.0, bw=4.0, pulse_fluence=1.0):
     Parameters
     ----------
     pulse_duration: float
-        pulse duration in fs
+        FWHM pulse duration in fs
     E0: float
         central photon energy in eV
     bw: float

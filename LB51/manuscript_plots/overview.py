@@ -4,8 +4,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import LB51_get_cal_data
-from manuscript_plots import set_plot_params
+from LB51 import LB51_get_cal_data
+from LB51.manuscript_plots import set_plot_params
 set_plot_params.init_paper_small()
 
 NO_SAM = 1      # Factor to multiply no sample spectra by when plotting
@@ -80,8 +80,8 @@ def overview_plot():
     nonlinear_spectra_plot(axs[0, 1], short_data['99'])
     xas_plot(axs[1, 1], short_data['359'], short_data['99'])
     format_data_overview_plot(f, axs)
-    plt.savefig('../plots/2020_03_23_overview.eps', dpi=600)
-    plt.savefig('../plots/2020_03_23_overview.png', dpi=600)
+    #plt.savefig('plots/2020_03_23_overview.eps', dpi=600)
+    #plt.savefig('plots/2020_03_23_overview.png', dpi=600)
 
 def format_data_overview_plot(f, axs):
     axs[1, 1].set_xlim((770, 783))

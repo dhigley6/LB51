@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import copy
 
-from xbloch import phot_fft_utils
+from LB51.xbloch import phot_fft_utils
 
 # Physical constants
 HBAR = 6.582E-1    # eV*fs

@@ -2,9 +2,8 @@
 """
 
 import numpy as np
-import pytest
 
-from code.xbloch import sase_sim
+from LB51.xbloch import sase_sim
 
 def test_normalization(pulse_fluence=1.0):
     t, t_y = sase_sim.simulate_gaussian()

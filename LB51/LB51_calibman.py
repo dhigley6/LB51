@@ -3,7 +3,7 @@
 import numpy as np
 
 #### FILE PATH ################################################################
-CAL_FILE = '../cals/cals.csv'
+CAL_FILE = 'cals/cals.csv'
 #### END FILE PATH ############################################################
 
 def get_cals(run):

@@ -5,29 +5,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-import LB51_get_cal_data
-from xbloch import gaussian_xbloch_sim, sase_xbloch_sim
-from manuscript_plots import set_plot_params
+import LB51.LB51_get_cal_data
+from LB51.xbloch import gaussian_xbloch_sim, sase_xbloch_sim
+from LB51.manuscript_plots import set_plot_params
 set_plot_params.init_paper_small()
 
 def quant():
     measured = get_measured_stim_efficiency()
-    #strengths, stim_efficiencies = sase_xbloch_sim.calculate_multipulse_stim()
-    strengths, stim_efficiencies = gaussian_xbloch_sim.calculate_stim_efficiencies()
+    strengths, stim_efficiencies = sase_xbloch_sim.calculate_multipulse_stim()
+    #strengths, stim_efficiencies = gaussian_xbloch_sim.calculate_stim_efficiencies()
     plt.figure(figsize=(3.37, 2.5))
-    plt.scatter(measured['short_fluences']/5, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
-    plt.scatter(measured['long_fluences']/25, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
+    plt.scatter(measured['short_fluences'], measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
+    plt.scatter(measured['long_fluences'], measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
     plt.semilogx(strengths*1E15, np.array(stim_efficiencies)*100, color='k', label='Three Level\nSimulation')
     plt.xlabel('Intensity (W/cm$^2$)')
     plt.ylabel('Inelastic Stimulated Scattering Efficiency')
-    plt.xlim((1E10, 1E15))
+    #plt.xlim((1E10, 1E15))
     plt.legend(loc='best')
-    format_quant_plot()
+    #format_quant_plot()
     #plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
     #plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
 
 def get_measured_stim_efficiency():
-    with open('../data/proc/stim_efficiency.pickle', 'rb') as f:
+    with open('data/proc/stim_efficiency.pickle', 'rb') as f:
         measured = pickle.load(f)
     return measured
 

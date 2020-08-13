@@ -14,7 +14,7 @@ import scipy.signal
 import os
 print("DONE")
 
-import LB51_calibman
+import LB51.LB51_calibman
 
 #### CONSTANTS
 ICCD_IMAGE_SIZE = 1024  # Number of rows in ICCD image, also number of columns in ICCD image

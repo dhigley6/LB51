@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Absorption spectra collected at SSRL with the same samples:
-SSRL_SPECTRA_PATH = '../data/SSRL_NPCoOandCoPdTrans.txt'
+SSRL_SPECTRA_PATH = 'data/SSRL_NPCoOandCoPdTrans.txt'
 
 # Parameters for converting nanopatterned CoO XAS to plain CoO XAS:
 CoO_OFFSET = 0.2

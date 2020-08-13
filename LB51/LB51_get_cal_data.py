@@ -3,11 +3,9 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-
-import LB51_h52rec
-import LB51_calibman
-import LB51_get_synchro
 from scipy.stats import scoreatpercentile
+
+from LB51 import LB51_h52rec, LB51_calibman, LB51_get_synchro
 
 ####
 BEAMLINE_TRANS = 0.1

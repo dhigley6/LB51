@@ -7,8 +7,7 @@
 import numpy as np
 import h5py
 
-import LB51_calibman
-import iccd3
+from LB51 import LB51_calibman, iccd3
 
 #### CONSTANTS
 # Path to LCLS HDF5 files:
@@ -17,9 +16,9 @@ HDF5_PATH = '/reg/data/ana01/amo/amob5114/hdf5/amob5114-r'
 GD_DATA_STR = 'Configure:0000/Run:0000/CalibCycle:0000/Bld::BldDataFEEGasDetEnergy/FEEGasDetEnergy/data'
 EBEAM_DATA_STR = 'Configure:0000/Run:0000/CalibCycle:0000/Bld::BldDataEBeamV5/EBeam/data'
 # Path to save spectral data:
-SPEC_SAVE_PATH = '../data/pre_proc/spec'
+SPEC_SAVE_PATH = 'data/pre_proc/spec'
 # Path to save non-spectral data:
-NONSPEC_SAVE_PATH = '../data/pre_proc/non_spec'
+NONSPEC_SAVE_PATH = 'data/pre_proc/non_spec'
 #### END CONSTANTS
 
 def load_run_set_data(run):

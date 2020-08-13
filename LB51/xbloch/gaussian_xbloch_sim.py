@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-from xbloch import xbloch2020
+from LB51.xbloch import xbloch2020
 
 FIELD_1E15 = 8.68E10   # Electric field strength in V/m that corresponds to
 # 10^15 W/cm^2
@@ -34,15 +34,15 @@ def simulate_gauss_series():
         print(f'Completed {str(strength)}')
     data = {'strengths': STRENGTHS,
             'sim_results': sim_results}
-    with open('xbloch/results/gauss.pickle', 'wb') as f:
+    with open('LB51/xbloch/results/gauss.pickle', 'wb') as f:
         pickle.dump(data, f)
 
 def load_gauss_series():
-    with open('xbloch/results/gauss.pickle', 'rb') as f:
+    with open('LB51/xbloch/results/gauss.pickle', 'rb') as f:
         data = pickle.load(f)
     return data
 
-def run_gauss_sim(strength=0.1E2, duration=0.33, times=np.linspace(-10, 20, int(1E4))):
+def run_gauss_sim(strength=0.1E2, duration=0.7, times=np.linspace(-10, 20, int(1E4))):
     system = xbloch2020.make_model_system()
     E_in = 1j*FIELD_1E15*np.sqrt(strength)*gauss(times, 0, sigma=duration)
     sim_result = system.run_simulation(times, E_in)
@@ -50,6 +50,8 @@ def run_gauss_sim(strength=0.1E2, duration=0.33, times=np.linspace(-10, 20, int(
 
 def gauss(x, t0, sigma):
     gaussian = np.exp((-1/2)*((x-t0)/sigma)**2)
+    integral = np.trapz(np.abs(gaussian)**2, x=x)
+    gaussian = gaussian/np.sqrt(integral)
     return gaussian
 
 def calculate_stim_efficiencies():
