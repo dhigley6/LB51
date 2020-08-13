@@ -8,13 +8,19 @@ import matplotlib.pyplot as plt
 
 from LB51.xbloch import phot_fft_utils
 
-HBAR = 6.582E-1 # Planck's constant (eV*fs) (from Wikipedia)
-FWHM2SIGMA = 1.0/2.3548 # Gaussian conversion factor (from Wolfram Mathworld)
-
+FWHM2SIGMA = 1.0 / 2.3548  # Gaussian conversion factor (from Wolfram Mathworld)
 # time points over which to simulate gaussian envelope SASE pulses (fs):
-TIMES = np.linspace(-50, 50, int(1E4))
+TIMES = np.linspace(-50, 50, int(1e4))
+FIELD_1E15 = 8.68e10  # Electric field strength in V/m that corresponds to
+# 10^15 W/cm^2 or 1 J/cm^2/fs
 
-def simulate_gaussian(pulse_duration=5.0, E0=777.0, bw=4.0, pulse_fluence=1.0):
+
+def simulate_gaussian(
+    pulse_duration: float = 5.0,
+    E0: float = 777.0,
+    bw: float = 4.0,
+    pulse_fluence: float = 1.0,
+):
     """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
 
     Parameters
@@ -30,41 +36,104 @@ def simulate_gaussian(pulse_duration=5.0, E0=777.0, bw=4.0, pulse_fluence=1.0):
 
     Returns
     -------
-    array: time points of simulated pulse
-    array: complex electric field of simulated pulse
+    t: one-dimensional np.ndarray
+        Time points of simulated pulse
+    t_y: one-dimensional np.ndarray (complex)
+        Complex electric field envelope of simulated pulse (V/m)
     """
-    duration_sigma = pulse_duration*FWHM2SIGMA
-    bw_sigma = bw*FWHM2SIGMA
     E = phot_fft_utils.convert_times_to_phots(TIMES)
-    frequency_envelope = np.exp(-(E-E0)**2/(2*bw_sigma**2))
-    frequency_envelope = frequency_envelope/np.sum(frequency_envelope)
-    temporal_envelope = np.exp(-1*(TIMES)**2/(2*duration_sigma**2))
-    temporal_envelope = temporal_envelope*len(TIMES)/np.sum(temporal_envelope)
-    t, t_y = _simulate(E, frequency_envelope, TIMES, temporal_envelope, pulse_fluence)
+    spectral_envelope = _calculate_envelope(E, bw, E0)
+    temporal_envelope = _calculate_envelope(TIMES, pulse_duration, 0)
+    t, t_y = _simulate(E, spectral_envelope, TIMES, temporal_envelope, pulse_fluence)
     return t, t_y
 
-def _simulate(E, E_intensity_envelope, t, t_intensity_envelope, pulse_fluence=1):
-    """Simulate a SASE pulse with input spectral and temporal envelopes
+
+def _calculate_envelope(x: np.ndarray, fwhm: float, x0: float = 0):
+    """Calculate Gaussian envelope for a given fwhm and peak (x0)
+
+    Parameters:
+    -----------
+    x: 1d np.ndarray
+        locations at which to calculate envelope
+    fwhm: float
+        Full-width-at-half-maximum of envelope
+    x0: float
+        Peak of envelope
+
+    Returns:
+    --------
+    envelope: 1d np.ndarray
+        strength of envelope as a function of x
     """
-    spectral_amplitude_envelope = np.sqrt(E_intensity_envelope)
+    sigma = fwhm * FWHM2SIGMA
+    envelope = np.exp(-((x - x0) ** 2) / (2 * sigma ** 2))
+    return envelope
+
+
+def _simulate(
+    E: np.ndarray,
+    E_intensity_envelope: np.ndarray,
+    t: np.ndarray,
+    t_intensity_envelope: np.ndarray,
+    pulse_fluence: float = 1.0,
+):
+    """Simulate a SASE pulse with input spectral and temporal envelopes
+
+    Parameters:
+    -----------
+    E: one-dimensional np.ndarray
+        Photon energies of X-ray pulse (eV)
+    E_intensity_envelope: one-dimensional np.ndarray
+        Spectral intensity envelope (average over different realizations)
+        of SASE pulse
+    t: one-dimensional np.ndarray
+        Times of X-ray pulse (fs)
+    t_intensity_envelope: one-dimensional np.ndarray
+        Temporal intensity envelope (average over different realizations)
+    pulse_fluence: float
+        Fluence of pulse (J/cm^2)
+
+    Returns
+    -------
+    t: 1d np.ndarray
+        Time points of simulated pulse
+    t_y: 1d np.ndarray (complex)
+        Complex electric field envelope of simulated pulse (V/m)
+    """
     spectral_phases = np.random.uniform(-np.pi, np.pi, len(E))
-    spectrum = spectral_amplitude_envelope*np.exp(spectral_phases*1j)
-    t = phot_fft_utils.convert_phots_to_times(E)
+    spectrum = np.sqrt(E_intensity_envelope) * np.exp(spectral_phases * 1j)
     t_y = phot_fft_utils.convert_phot_signal_to_time_signal(spectrum)
-    t_amplitude_envelope = np.sqrt(t_intensity_envelope)   
-    t_y = t_y*t_amplitude_envelope
+    t_y = t_y * np.sqrt(t_intensity_envelope)
     t_y = _normalize_pulse(t, t_y, pulse_fluence)
     return t, t_y
 
-def _normalize_pulse(t, t_y, pulse_fluence=1000):
+
+def _normalize_pulse(t: np.ndarray, t_y: np.ndarray, pulse_fluence: float = 1000):
     """Normalize pulse to specified fluence
+
+    Parameters:
+    -----------
+    t: 1d np.ndarray
+        Times of pulse
+    t_y: 1d np.ndarray
+        Unnormalized temporal envelope of pulse
+    pulse_fluence: float
+        Fluene of output normalized pulse (J/cm^2)
+
+    Returns:
+    --------
+    t_y: 1d np.ndarray (complex)
+        Complex electric field envelope of simulated pulse (V/m)
     """
-    integral = np.trapz(np.abs(t_y)**2, x=t)
-    t_y = t_y*np.sqrt(pulse_fluence)/np.sqrt(integral)
+    integral = np.trapz(np.abs(t_y) ** 2, x=t)
+    # normalize amplitude by roots since intensity is amplitude squared
+    t_y = t_y * np.sqrt(pulse_fluence) / np.sqrt(integral)
+    t_y = t_y * FIELD_1E15
     return t_y
 
-def test_gauss_simulations():
-    """plot average pulse envelopes in time and photon energy domains
+
+def demo_gauss_simulations():
+    """Demonstrate Gaussian envelope SASE pulse simulations
     """
     t_y_list = []
     E_y_list = []
@@ -77,15 +146,11 @@ def test_gauss_simulations():
     t_y_array = np.vstack(t_y_list)
     E_y_array = np.vstack(E_y_list)
     _, axs = plt.subplots(2, 1)
-    axs[0].plot(t, np.mean(np.abs(t_y_array)**2, axis=0))
-    axs[1].plot(E, np.mean(np.abs(E_y_array)**2, axis=0))
-    pulse_energies = np.trapz(np.abs(t_y_array)**2, dx=(t[2]-t[1]), axis=1)
-    plt.figure()
-    plt.hist(pulse_energies)
-    plt.axvline(np.mean(pulse_energies), color='k', linestyle='--')
+    axs[0].plot(t, np.mean(np.abs(t_y_array) ** 2, axis=0))
+    axs[1].plot(E, np.mean(np.abs(E_y_array) ** 2, axis=0))
     _, axs = plt.subplots(1, 2)
     for i in range(4):
-        t_norm = np.amax(np.abs(t_y_array[i]**2))
-        axs[0].plot(t, np.abs(t_y_array[i]**2)/t_norm+i)
-        E_norm = np.amax(np.abs(E_y_array[i]**2))
-        axs[1].plot(E, np.abs(E_y_array[i]**2)/E_norm+i)
+        t_norm = np.amax(np.abs(t_y_array[i] ** 2))
+        axs[0].plot(t, np.abs(t_y_array[i] ** 2) / t_norm + i)
+        E_norm = np.amax(np.abs(E_y_array[i] ** 2))
+        axs[1].plot(E, np.abs(E_y_array[i] ** 2) / E_norm + i)

@@ -12,9 +12,6 @@ from joblib import Parallel, delayed
 from LB51.xbloch import xbloch2020
 from LB51.xbloch import sase_sim
 
-FIELD_1E15 = 8.68E10   # Electric field strength in V/m that corresponds to
-# 10^15 W/cm^2 or 1 J/cm^2/fs
-
 # Simulation parameters:
 STRENGTHS = np.logspace(-3, 1, 3)     # Fluences of incident X-ray pulses (in 10^15 W/cm^2)
 STRENGTHS = np.append(1E-8, STRENGTHS)
@@ -42,7 +39,6 @@ def _simulate_sase_series():
     """
     sim_results = []
     times, E_in = sase_sim.simulate_gaussian()
-    E_in = E_in*FIELD_1E15
     sim_results = Parallel(n_jobs=-1)(delayed(_run_sase_sim)(times, E_in, strength) for strength in STRENGTHS)
     #for strength in STRENGTHS:
     #    sim_result = _run_sase_sim(times, E_in, strength)
