@@ -17,7 +17,10 @@ def quant():
     stim_efficiencies = sim_results['stim_efficiencies']
     f, axs = plt.subplots(4, 1, figsize=(3.37, 5))
     axs[0].plot(sim_results['phot'], np.abs(sim_results['summed_incident_fields'][0])**2)
-    a = 5
+    linear_difference = (np.abs(sim_results['summed_transmitted_fields'][0]**2))-np.abs(sim_results['summed_incident_fields'][0]**2)/sim_results['fluences'][0]
+    for i in range(len(sim_results['fluences'])):
+        intensity_difference = (np.abs(sim_results['summed_transmitted_fields'][i]**2)-np.abs(sim_results['summed_incident_fields'][i]**2))/sim_results['fluences'][i]-linear_difference
+        axs[1].plot(sim_results['phot'], intensity_difference)
     axs[1].plot(sim_results['phot'], np.abs(sim_results['summed_transmitted_fields'][0])**2)
     axs[2].scatter(measured['short_fluences']*1E-12, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
     axs[3].scatter(measured['long_fluences']*1E-12, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
@@ -32,10 +35,16 @@ def get_measured_stim_efficiency():
     return measured
 
 def format_quant_plot(axs):
-    axs[1].set_xlabel('Fluence (mJ/cm$^2$)')
-    axs[1].set_ylabel('Stim. Scattering\nEfficiency (%)')
+    axs[0].set_xlim((770, 784))
+    axs[1].set_xlim((770, 784))
+    axs[0].set_xlabel('Photon Energy (eV)')
+    axs[0].set_ylabel('Intensity (a.u.)')
+    axs[1].set_xlabel('Photon Energy (eV)')
+    axs[1].set_ylabel('Intensity (a.u.)')
     axs[2].set_xlabel('Fluence (mJ/cm$^2$)')
     axs[2].set_ylabel('Stim. Scattering\nEfficiency (%)')
+    axs[3].set_xlabel('Fluence (mJ/cm$^2$)')
+    axs[3].set_ylabel('Stim. Scattering\nEfficiency (%)')
     #plt.legend(loc='best', frameon=True)
     plt.tight_layout()
 
