@@ -12,16 +12,17 @@ set_plot_params.init_paper_small()
 
 def quant():
     measured = get_measured_stim_efficiency()
-    strengths, stim_efficiencies = sase_xbloch_sim.calculate_multipulse_stim()
-    plt.figure(figsize=(3.37, 2.5))
-    plt.scatter(measured['short_fluences'], measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
-    plt.scatter(measured['long_fluences'], measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
-    plt.semilogx(strengths*1E15, np.array(stim_efficiencies)*100, color='k', label='Three Level\nSimulation')
-    plt.xlabel('Intensity (W/cm$^2$)')
-    plt.ylabel('Inelastic Stimulated Scattering Efficiency')
-    #plt.xlim((1E10, 1E15))
-    plt.legend(loc='best')
-    #format_quant_plot()
+    sim_results = sase_xbloch_sim.load_multipulse_data()
+    fluences = sim_results['fluences']
+    stim_efficiencies = sim_results['stim_efficiencies']
+    f, axs = plt.subplots(4, 1, figsize=(3.37, 5))
+    axs[0].plot(sim_results['phot'], np.abs(sim_results['summed_incident_fields'][0])**2)
+    a = 5
+    axs[1].plot(sim_results['phot'], np.abs(sim_results['summed_transmitted_fields'][0])**2)
+    axs[2].scatter(measured['short_fluences']*1E-12, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
+    axs[3].scatter(measured['long_fluences']*1E-12, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
+    axs[2].plot(fluences*1E3, np.array(stim_efficiencies), color='k', label='Three Level\nSimulation')
+    format_quant_plot(axs)
     #plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
     #plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
 
@@ -30,10 +31,12 @@ def get_measured_stim_efficiency():
         measured = pickle.load(f)
     return measured
 
-def format_quant_plot():
-    plt.xlabel('Intensity (10$^{12}$ W/cm$^2$)')
-    plt.ylabel('Stim. Scattering\nEfficiency (%)')
-    plt.legend(loc='best', frameon=True)
+def format_quant_plot(axs):
+    axs[1].set_xlabel('Fluence (mJ/cm$^2$)')
+    axs[1].set_ylabel('Stim. Scattering\nEfficiency (%)')
+    axs[2].set_xlabel('Fluence (mJ/cm$^2$)')
+    axs[2].set_ylabel('Stim. Scattering\nEfficiency (%)')
+    #plt.legend(loc='best', frameon=True)
     plt.tight_layout()
 
 def run_quant_ana():

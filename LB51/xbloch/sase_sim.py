@@ -5,6 +5,7 @@ free-electron laser pulse statistics" (2010)
 
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Tuple
 
 from LB51.xbloch import phot_fft_utils
 
@@ -20,7 +21,7 @@ def simulate_gaussian(
     E0: float = 777.0,
     bw: float = 4.0,
     pulse_fluence: float = 1.0,
-):
+) -> Tuple[np.ndarray, np.ndarray]:
     """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
 
     Parameters
@@ -48,7 +49,7 @@ def simulate_gaussian(
     return t, t_y
 
 
-def _calculate_envelope(x: np.ndarray, fwhm: float, x0: float = 0):
+def _calculate_envelope(x: np.ndarray, fwhm: float, x0: float = 0) -> np.ndarray:
     """Calculate Gaussian envelope for a given fwhm and peak (x0)
 
     Parameters:
@@ -76,7 +77,7 @@ def _simulate(
     t: np.ndarray,
     t_intensity_envelope: np.ndarray,
     pulse_fluence: float = 1.0,
-):
+) -> Tuple[np.ndarray, np.ndarray]:
     """Simulate a SASE pulse with input spectral and temporal envelopes
 
     Parameters:
@@ -108,7 +109,9 @@ def _simulate(
     return t, t_y
 
 
-def _normalize_pulse(t: np.ndarray, t_y: np.ndarray, pulse_fluence: float = 1000):
+def _normalize_pulse(
+    t: np.ndarray, t_y: np.ndarray, pulse_fluence: float = 1000
+) -> np.ndarray:
     """Normalize pulse to specified fluence
 
     Parameters:
