@@ -13,7 +13,7 @@ from LB51.xbloch import xbloch2020
 from LB51.xbloch import sase_sim
 
 # Simulation parameters:
-STRENGTHS = np.logspace(-3, 1, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
+STRENGTHS = np.logspace(-1, 0.5, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
 STRENGTHS = np.append(1e-8, STRENGTHS)
 
 ABS_LIMITS = (777, 779)  # Region of absorption (in eV above 778 eV)

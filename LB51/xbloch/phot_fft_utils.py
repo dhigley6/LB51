@@ -16,7 +16,8 @@ def convert_times_to_phots(t, E_0=778):
 def convert_time_signal_to_phot_signal(t_signal):
     """Convert time domain signal to photon energy domain
     """
-    phot_signal = np.fft.fftshift(np.fft.fft(t_signal))
+    windowed_signal = np.hamming(len(t_signal))*t_signal
+    phot_signal = np.fft.fftshift(np.fft.fft(windowed_signal))
     return phot_signal
 
 def convert_phots_to_times(phots, t_0=0):

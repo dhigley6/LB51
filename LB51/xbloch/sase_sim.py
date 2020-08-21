@@ -11,7 +11,7 @@ from LB51.xbloch import phot_fft_utils
 
 FWHM2SIGMA = 1.0 / 2.3548  # Gaussian conversion factor (from Wolfram Mathworld)
 # time points over which to simulate gaussian envelope SASE pulses (fs):
-TIMES = np.linspace(-50, 50, int(1e4))
+TIMES = np.linspace(-5, 20, int(1e4))
 FIELD_1E15 = 8.68e10  # Electric field strength in V/m that corresponds to
 # 10^15 W/cm^2 or 1 J/cm^2/fs
 
