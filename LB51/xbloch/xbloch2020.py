@@ -37,18 +37,6 @@ THICKNESS = 5e-11
 # so that the first born approximation approximately holds.
 
 
-def make_model_system() -> LambdaBloch:
-    """Make model system for 3-level simulations at Co L3 resonance of Co metal
-
-    Returns:
-    --------
-        model_system: LambdaBloch
-            The model three-level system
-    """
-    model_system = LambdaBloch(0, 778, 2, DIPOLE, 1 * np.sqrt(3) * DIPOLE, 778 / HBAR)
-    return model_system
-
-
 class LambdaBloch:
     """Calculate evolution of density matrix elements for Lambda coupling
 
@@ -301,3 +289,15 @@ class LambdaBloch:
             "E_out": E_out,
         }
         return phot_results
+
+
+def make_model_system() -> LambdaBloch:
+    """Make model system for 3-level simulations at Co L3 resonance of Co metal
+
+    Returns:
+    --------
+        model_system: LambdaBloch
+            The model three-level system
+    """
+    model_system = LambdaBloch(0, 778, 2, DIPOLE, 1 * np.sqrt(3) * DIPOLE, 778 / HBAR)
+    return model_system
