@@ -26,6 +26,9 @@ STIM_LIMITS = (
 RESULTS_FILE = "LB51/xbloch/results/multipulse_sase.pickle"
 
 
+def run_multipulse_sase_series(n_pulses: int = 4):
+    pass
+
 def simulate_multipulse_sase_series(n_pulses: int = 4):
     """Simulate interaction of SASE pulses with 3-level system vs fluence
 
@@ -51,8 +54,8 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
     """
     times = sase_sim.TIMES  # use default times
     E_in_list = [sase_sim.simulate_gaussian()[1] for _ in range(n_pulses)]
-    summed_incident_fields_list = []
-    summed_transmitted_fields_list = []
+    summed_incident_intensities_list = []
+    summed_transmitted_intensities_list = []
     stim_efficiencies = []
     for i, strength in enumerate(STRENGTHS):
         sim_results = Parallel(n_jobs=-1)(
@@ -60,8 +63,8 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
         )
         (
             phot,
-            summed_incident_fields,
-            summed_transmitted_fields,
+            summed_incident_intensities,
+            summed_transmitted_intensities,
             intensity_difference,
         ) = _get_summed_result(sim_results, strength)
         if i == 0:
@@ -71,15 +74,15 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
         stim_efficiency = _get_stim_efficiency(
             phot, intensity_difference, linear_intensity_difference
         )
-        summed_incident_fields_list.append(summed_incident_fields)
-        summed_transmitted_fields_list.append(summed_transmitted_fields)
+        summed_incident_intensities_list.append(summed_incident_intensities)
+        summed_transmitted_intensities_list.append(summed_transmitted_intensities)
         stim_efficiencies.append(stim_efficiency)
     summary_result = {
         "fluences": STRENGTHS,
         "stim_efficiencies": stim_efficiencies,
         "phot": sim_results[0]["phot"],
-        "summed_incident_fields": summed_incident_fields_list,
-        "summed_transmitted_fields": summed_transmitted_fields_list,
+        "summed_incident_intensities": summed_incident_intensities_list,
+        "summed_transmitted_intensities": summed_transmitted_intensities_list,
     }
     with open(RESULTS_FILE, "wb") as f:
         pickle.dump(summary_result, f)
@@ -136,22 +139,21 @@ def _get_summed_result(
     --------
     phot: 1d np.ndarray
         Photon energies (eV)
-    summed_incident_fields: 1d np.ndarray (complex)
-        Summed incident spectral fields
-    summed_transmitted_fields: 1d np.ndarray (complex)
-        Summed transmitted spectral fields
+    summed_incident_intensities: 1d np.ndarray
+        Summed incident spectral intensities
+    summed_transmitted_fields: 1d np.ndarray
+        Summed transmitted spectral intensities
     intensity_difference: 1d np.ndarray
-        Normalized intensity difference of transmitted and incident fields
+        Normalized intensity difference of transmitted and incident pulses
     """
     phot = sim_results[0]["phot"]  # photon energies
-    E_phot_ins = [sim_result["E_phot_in"] for sim_result in sim_results]
-    summed_incident_fields = np.sum(E_phot_ins, axis=0)
-    E_phot_outs = [sim_result["E_phot_out"] for sim_result in sim_results]
-    summed_transmitted_fields = np.sum(E_phot_outs, axis=0)
+    I_phot_ins = [np.abs(sim_result["E_phot_in"])**2 for sim_result in sim_results]
+    summed_incident_intensities = np.sum(I_phot_ins, axis=0)
+    I_phot_outs = [np.abs(sim_result["E_phot_out"])**2 for sim_result in sim_results]
+    summed_transmitted_intensities = np.sum(I_phot_outs, axis=0)
     intensity_difference = (
-        np.abs(summed_transmitted_fields) ** 2 - np.abs(summed_incident_fields) ** 2
-    ) / fluence
-    return phot, summed_incident_fields, summed_transmitted_fields, intensity_difference
+        (summed_transmitted_intensities-summed_incident_intensities) / fluence)
+    return phot, summed_incident_intensities, summed_transmitted_intensities, intensity_difference
 
 
 def _run_sase_sim(

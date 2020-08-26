@@ -16,14 +16,13 @@ def quant():
     fluences = sim_results['fluences']
     stim_efficiencies = sim_results['stim_efficiencies']
     f, axs = plt.subplots(4, 1, figsize=(3.37, 5))
-    axs[0].plot(sim_results['phot'], np.abs(sim_results['summed_incident_fields'][0])**2/sim_results['fluences'][0])
-    linear_difference = (np.abs(sim_results['summed_transmitted_fields'][0]**2))-np.abs(sim_results['summed_incident_fields'][0]**2)/sim_results['fluences'][0]
+    axs[0].plot(sim_results['phot'], sim_results['summed_incident_intensities'][0]/sim_results['fluences'][0])
     for i in range(len(sim_results['fluences'])):
-        intensity_difference = (np.abs(sim_results['summed_transmitted_fields'][i]**2)-np.abs(sim_results['summed_incident_fields'][i]**2))/sim_results['fluences'][i]
-        to_plot = np.abs(sim_results['summed_incident_fields'][i]**2)/sim_results['fluences'][i]
+        intensity_difference = (sim_results['summed_transmitted_intensities'][i]-sim_results['summed_incident_intensities'][i])/sim_results['fluences'][i]
+        if i == 0:
+            linear_difference = intensity_difference
         axs[1].plot(sim_results['phot'], intensity_difference, label=sim_results['fluences'][i])
     axs[1].legend(loc='best')
-    #axs[1].plot(sim_results['phot'], np.abs(sim_results['summed_transmitted_fields'][0])**2)
     axs[2].scatter(measured['short_fluences']*1E-12, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
     axs[3].scatter(measured['long_fluences']*1E-12, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
     axs[2].plot(fluences*1E3, np.array(stim_efficiencies), color='k', label='Three Level\nSimulation')
