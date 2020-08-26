@@ -1,7 +1,7 @@
 """
 @author: dhigley
 
-Run X-ray Maxwell-Bloch 3-level simulations for SASE pulses
+Run X-ray Maxwell-Bloch 3-level simulations for SASE and Gaussian pulses
 """
 
 import numpy as np
@@ -23,14 +23,33 @@ STIM_LIMITS = (
 )  # Region of stimulated inelastic scattering (in eV above 778 eV)
 
 # where to save simulation results:
-RESULTS_FILE = "LB51/xbloch/results/multipulse_sase.pickle"
+SASE_RESULTS_FILE = "LB51/xbloch/results/multipulse_sase.pickle"
+GAUSS_RESULTS_FILE = "LB51/xbloch/results/gauss.pickle"
 
+def simulate_gaussian_case(duration=0.5):
+    times = sase_sim.TIMES
+    E_in_list = [sase_sim._normalize_pulse(times, gauss(times, 0, sigma=duration), 1)]
+    summary_result = simulate_multipulse_series(times, E_in_list)
+    with open(GAUSS_RESULTS_FILE, "wb") as f:
+        pickle.dump(summary_result, f)
 
-def run_multipulse_sase_series(n_pulses: int = 4):
-    pass
+def gauss(x, t0, sigma):
+    """Simulate Gaussian pulse with t0 center and sigma width
+    """
+    gaussian = np.exp((-1/2)*((x-t0)/sigma)**2)
+    integral = np.trapz(np.abs(gaussian)**2, x=x)
+    gaussian = gaussian/np.sqrt(integral)
+    return gaussian
 
 def simulate_multipulse_sase_series(n_pulses: int = 4):
-    """Simulate interaction of SASE pulses with 3-level system vs fluence
+    times = sase_sim.TIMES
+    E_in_list = [sase_sim.simulate_gaussian()[1] for _ in range(n_pulses)]
+    summary_result = simulate_multipulse_series(times, E_in_list)
+    with open(SASE_RESULTS_FILE, "wb") as f:
+        pickle.dump(summary_result, f)
+
+def simulate_multipulse_series(times, E_in_list):
+    """Simulate interaction of pulses with 3-level system vs fluence
 
     Results are saved in RESULTS_FILE as a dictionary
         'fluences' key: list[float]
@@ -48,18 +67,14 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
 
     Parameters:
     -----------
-    n_pulses: int
-        The number of different SASE pulse realizations to simulate for each
-        fluence.
+
     """
-    times = sase_sim.TIMES  # use default times
-    E_in_list = [sase_sim.simulate_gaussian()[1] for _ in range(n_pulses)]
     summed_incident_intensities_list = []
     summed_transmitted_intensities_list = []
     stim_efficiencies = []
     for i, strength in enumerate(STRENGTHS):
         sim_results = Parallel(n_jobs=-1)(
-            delayed(_run_sase_sim)(times, E_in, strength) for E_in in E_in_list
+            delayed(_run_single_pulse_sim)(times, E_in, strength) for E_in in E_in_list
         )
         (
             phot,
@@ -84,8 +99,7 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
         "summed_incident_intensities": summed_incident_intensities_list,
         "summed_transmitted_intensities": summed_transmitted_intensities_list,
     }
-    with open(RESULTS_FILE, "wb") as f:
-        pickle.dump(summary_result, f)
+    return summary_result
 
 
 def _get_stim_efficiency(
@@ -156,10 +170,10 @@ def _get_summed_result(
     return phot, summed_incident_intensities, summed_transmitted_intensities, intensity_difference
 
 
-def _run_sase_sim(
+def _run_single_pulse_sim(
     times: np.ndarray, E_in: np.ndarray, strength: float = 1e-3
 ) -> Dict[str, np.ndarray]:
-    """Run single pulse SASE simulation
+    """Run single pulse simulation
 
     Parameters:
     -----------
@@ -193,7 +207,7 @@ def _run_sase_sim(
 
 
 def load_multipulse_data() -> Dict[str, Union[List[float], np.ndarray]]:
-    """Load saved simulation results
+    """Load saved SASE simulation results
 
     Returns:
     --------
@@ -211,6 +225,13 @@ def load_multipulse_data() -> Dict[str, Union[List[float], np.ndarray]]:
             Transmitted field strengths (V/m). Rows are different fluences
             and columns are different photon energies.
     """
-    with open(RESULTS_FILE, "rb") as f:
+    with open(SASE_RESULTS_FILE, "rb") as f:
+        data = pickle.load(f)
+    return data
+
+def load_gauss_data() -> Dict[str, Union[List[float], np.ndarray]]:
+    """Load saved Gaussian pulse simulation results
+    """
+    with open(GAUSS_RESULTS_FILE, 'rb') as f:
         data = pickle.load(f)
     return data

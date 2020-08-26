@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 import pickle
 
 import LB51.LB51_get_cal_data
-from LB51.xbloch import gaussian_xbloch_sim, sase_xbloch_sim
+from LB51.xbloch import sase_xbloch_sim
 from LB51.manuscript_plots import set_plot_params
 set_plot_params.init_paper_small()
 
 def quant():
     measured = get_measured_stim_efficiency()
-    sim_results = sase_xbloch_sim.load_multipulse_data()
+    sim_results = sase_xbloch_sim.load_gauss_data()   # gaussian pulse case
+    sim_results = sase_xbloch_sim.load_multipulse_data()    # SASE pulses case
     fluences = sim_results['fluences']
     stim_efficiencies = sim_results['stim_efficiencies']
     f, axs = plt.subplots(4, 1, figsize=(3.37, 5))
