@@ -93,7 +93,7 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
 def simulate_multipulse_series(
     times: np.ndarray,
     E_in_list: List[np.ndarray]
-) -> Dict[str, Union[List[float], np.ndarray]:
+) -> Dict[str, Union[List[float], np.ndarray]]:
     """Simulate interaction of pulses with 3-level system vs fluence
 
     Parameters:
@@ -178,6 +178,7 @@ def _get_stim_efficiency(
     abs_region = (phot > ABS_LIMITS[0]) & (phot < ABS_LIMITS[1])
     abs_strength = -1 * np.trapz(linear_intensity_difference[abs_region])
     change_from_linear = intensity_difference - linear_intensity_difference
+    change_from_linear[change_from_linear < 0] = 0     # clip negative values to zero (shouldn't change result significantly for simulation)
     stim_region = (phot > STIM_LIMITS[0]) & (phot < STIM_LIMITS[1])
     stim_strength = np.trapz(change_from_linear[stim_region])
     stim_efficiency = 100 * stim_strength / abs_strength

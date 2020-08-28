@@ -5,48 +5,55 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-import LB51.LB51_get_cal_data
-from LB51.xbloch import sase_xbloch_sim
+from LB51 import LB51_get_cal_data
+from LB51.xbloch import do_xbloch_sim
 from LB51.manuscript_plots import set_plot_params
 set_plot_params.init_paper_small()
 
+MEASURED_STIM_FILE = 'data/proc/stim_efficiency.pickle'
+
 def quant():
     measured = get_measured_stim_efficiency()
-    sim_results = sase_xbloch_sim.load_gauss_data()   # gaussian pulse case
-    sim_results = sase_xbloch_sim.load_multipulse_data()    # SASE pulses case
+    sim_results = do_xbloch_sim.load_gauss_data()   # gaussian pulse case
+    sim_results = do_xbloch_sim.load_multipulse_data()    # SASE pulses case
+    markus = get_markus_simulation()
     fluences = sim_results['fluences']
     stim_efficiencies = sim_results['stim_efficiencies']
-    f, axs = plt.subplots(4, 1, figsize=(3.37, 5))
-    axs[0].plot(sim_results['phot'], sim_results['summed_incident_intensities'][0]/sim_results['fluences'][0])
-    for i in range(len(sim_results['fluences'])):
-        intensity_difference = (sim_results['summed_transmitted_intensities'][i]-sim_results['summed_incident_intensities'][i])/sim_results['fluences'][i]
-        if i == 0:
-            linear_difference = intensity_difference
-        axs[1].plot(sim_results['phot'], intensity_difference, label=sim_results['fluences'][i])
-    axs[1].legend(loc='best')
-    axs[2].scatter(measured['short_fluences']*1E-12, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
-    axs[3].scatter(measured['long_fluences']*1E-12, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
-    axs[2].plot(fluences*1E3, np.array(stim_efficiencies), color='k', label='Three Level\nSimulation')
+    _diagnostic_figure(sim_results)
+    f, axs = plt.subplots(2, 1, figsize=(3.37, 4))
+    axs[0].scatter(measured['short_fluences']*1E-12, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
+    axs[1].scatter(measured['long_fluences']*1E-12, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
+    axs[0].plot(markus['5fs']['fluence'], markus['5fs']['stim']*100, label='Rate Eqs.')
+    axs[1].plot(markus['25fs']['fluence']*5, markus['25fs']['stim']*100, label='Rate Eqs.')
+    axs[0].plot(fluences*1E3, np.array(stim_efficiencies), color='k', label='Three Level\nSimulation')
     format_quant_plot(axs)
     #plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
     #plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
 
+def _diagnostic_figure(sim_results):
+    """Show spectra on separate figure
+    """
+    f, axs = plt.subplots(2, 1, sharex=True)
+    axs[0].plot(sim_results['phot'], sim_results['summed_incident_intensities'][0]/sim_results['fluences'][0])
+    for i in range(len(sim_results['fluences'])):
+        intensity_difference = (sim_results['summed_transmitted_intensities'][i]-sim_results['summed_incident_intensities'][i])/sim_results['fluences'][i]
+        axs[1].plot(sim_results['phot'], intensity_difference, label=sim_results['fluences'][i])
+    axs[0].set_xlim((770, 784))
+    axs[0].set_ylabel('Intensity')
+    axs[1].set_ylabel('Intensity')
+    axs[1].set_ylabel('Photon Energy (eV)')
+    axs[1].legend(loc='best')
+
 def get_measured_stim_efficiency():
-    with open('data/proc/stim_efficiency.pickle', 'rb') as f:
+    with open(MEASURED_STIM_FILE, 'rb') as f:
         measured = pickle.load(f)
     return measured
 
 def format_quant_plot(axs):
-    axs[0].set_xlim((770, 784))
-    axs[1].set_xlim((770, 784))
-    axs[0].set_xlabel('Photon Energy (eV)')
-    axs[0].set_ylabel('Intensity (a.u.)')
-    axs[1].set_xlabel('Photon Energy (eV)')
-    axs[1].set_ylabel('Intensity (a.u.)')
-    axs[2].set_xlabel('Fluence (mJ/cm$^2$)')
-    axs[2].set_ylabel('Stim. Scattering\nEfficiency (%)')
-    axs[3].set_xlabel('Fluence (mJ/cm$^2$)')
-    axs[3].set_ylabel('Stim. Scattering\nEfficiency (%)')
+    axs[0].set_xlabel('Fluence (mJ/cm$^2$)')
+    axs[0].set_ylabel('Stim. Scattering\nEfficiency (%)')
+    axs[1].set_xlabel('Fluence (mJ/cm$^2$)')
+    axs[1].set_ylabel('Stim. Scattering\nEfficiency (%)')
     #plt.legend(loc='best', frameon=True)
     plt.tight_layout()
 
@@ -82,7 +89,7 @@ def run_quant_ana():
 def save_quant_data(quant_data):
     """Save quantified data
     """
-    with open('../data/proc/stim_efficiency.pickle', 'wb') as f:
+    with open(MEASURED_STIM_FILE, 'wb') as f:
         pickle.dump(quant_data, f)
 
 def get_stim_efficiency(data):
@@ -92,9 +99,29 @@ def get_stim_efficiency(data):
     res_absorbed = data['sum_intact']['no_sam_spec']-res_transmitted
     phot = data['sum_intact']['phot']
     abs_region = (phot > 774) & (phot < 780)
-    res_absorbed_sum = np.sum(res_absorbed[abs_region])
+    res_absorbed_sum = np.trapz(res_absorbed[abs_region])
     stim_region = (phot > 773.5) & (phot < 775)
     stim = data['sum_intact']['exc_sam_spec']
-    stim_sum = np.sum(stim[stim_region])
+    stim[stim < 0] = 0     # clip negative values to zero
+    stim_sum = np.trapz(stim[stim_region])
     stim_efficiency = stim_sum/res_absorbed_sum
     return stim_efficiency
+
+def get_markus_simulation():
+    markus_5fs_data = np.genfromtxt('data/proc/Markus_5fs.txt', skip_header=1)
+    markus_25fs_data = np.genfromtxt('data/proc/Markus_25fs.txt', skip_header=1)
+    markus_5fs_result = convert_markus_data(markus_5fs_data)
+    markus_25fs_result = convert_markus_data(markus_25fs_data)
+    return {
+        '5fs': markus_5fs_result,
+        '25fs': markus_25fs_result
+    }
+
+def convert_markus_data(data):
+    peak_intensity = data[:, 0]
+    stim_efficiency = data[:, 1]
+    fluence = peak_intensity*5.3223351989345264/1E12    # mJ/cm^2
+    return {
+        'fluence': fluence,
+        'stim': stim_efficiency
+    }
