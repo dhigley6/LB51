@@ -28,7 +28,7 @@ DENSITY = (
 DIPOLE = (
     4.07e-12 + 0j
 ) * 1.602e-19  # Dipole matrix element to use   (I think this is in C*m, but need to check)
-DIPOLE = (8.03e-12 + 0j) * 1.602e-19
+#DIPOLE = (8.03e-12 + 0j) * 1.602e-19
 Co_L3_BROAD = 0.43  # Natural lifetime of Co 2p_{3/2} core hole
 # Thickness of sample:
 # THICKNESS = 1E-9    # thickness of sample in m

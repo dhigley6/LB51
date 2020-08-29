@@ -23,9 +23,16 @@ STIM_LIMITS = (
 )  # Region of stimulated inelastic scattering (in eV above 778 eV)
 
 # where to save simulation results:
-SASE_RESULTS_FILE = "LB51/xbloch/results/multipulse_sase.pickle"
-GAUSS_RESULTS_FILE = "LB51/xbloch/results/gauss.pickle"
+SASE_RESULTS_FILE_START = "LB51/xbloch/results/multipulse_sase_"
+GAUSS_RESULTS_FILE_START = "LB51/xbloch/results/gauss_"
 
+def run_manuscript_simulations():
+    """Run simulations to be used in manuscript
+    """
+    times_5fs = np.linspace(-25, 50, int(5e5))
+    simulate_multipulse_sase_series(5.0, 50, times_5fs)
+    times_25fs = np.linspace(-50, 100, int(5e5))
+    simulate_multipulse_sase_series(25.0, 50, times_25fs)
 
 def simulate_gaussian_case(duration: float = 0.5):
     """Simulate interaction of Gaussian pulses with 3-level-system vs fluence
@@ -41,7 +48,8 @@ def simulate_gaussian_case(duration: float = 0.5):
     times = sase_sim.TIMES
     E_in_list = [sase_sim._normalize_pulse(times, gauss(times, 0, sigma=duration), 1)]
     summary_result = simulate_multipulse_series(times, E_in_list)
-    with open(GAUSS_RESULTS_FILE, "wb") as f:
+    results_file = GAUSS_RESULTS_FILE_START+str(duration)+'.pickle'
+    with open(results_file, "wb") as f:
         pickle.dump(summary_result, f)
 
 
@@ -72,7 +80,7 @@ def gauss(
     return gaussian
 
 
-def simulate_multipulse_sase_series(n_pulses: int = 4):
+def simulate_multipulse_sase_series(duration: float = 5.0, n_pulses: int = 4, times: np.ndarray = sase_sim.TIMES):
     """Simulate interaction of SASE pulses with 3-level-system vs fluence
 
     Results are saved in SASE_RESULTS_FILE as a dictionary with the
@@ -83,10 +91,10 @@ def simulate_multipulse_sase_series(n_pulses: int = 4):
     n_pulses: int
         Number of pulses to simulate
     """
-    times = sase_sim.TIMES
-    E_in_list = [sase_sim.simulate_gaussian()[1] for _ in range(n_pulses)]
+    E_in_list = [sase_sim.simulate_gaussian(duration)[1] for _ in range(n_pulses)]
     summary_result = simulate_multipulse_series(times, E_in_list)
-    with open(SASE_RESULTS_FILE, "wb") as f:
+    results_file = SASE_RESULTS_FILE_START+str(duration)+'.pickle'
+    with open(results_file, "wb") as f:
         pickle.dump(summary_result, f)
 
 
@@ -263,7 +271,7 @@ def _run_single_pulse_sim(
     return simplified_result
 
 
-def load_multipulse_data() -> Dict[str, Union[List[float], np.ndarray]]:
+def load_multipulse_data(duration: float) -> Dict[str, Union[List[float], np.ndarray]]:
     """Load saved SASE simulation results
 
     Returns:
@@ -271,12 +279,13 @@ def load_multipulse_data() -> Dict[str, Union[List[float], np.ndarray]]:
     data: Dictionary
         Format is the same as that returned by simulate_multipulse_series
     """
-    with open(SASE_RESULTS_FILE, "rb") as f:
+    results_file = SASE_RESULTS_FILE_START+str(duration)+'.pickle'
+    with open(results_file, "rb") as f:
         data = pickle.load(f)
     return data
 
 
-def load_gauss_data() -> Dict[str, Union[List[float], np.ndarray]]:
+def load_gauss_data(duration: float) -> Dict[str, Union[List[float], np.ndarray]]:
     """Load saved Gaussian pulse simulation results
 
     Returns:
@@ -284,6 +293,7 @@ def load_gauss_data() -> Dict[str, Union[List[float], np.ndarray]]:
     data: Dictionary
         Format is the same as that returned by simulate_multipulse_series
     """
-    with open(GAUSS_RESULTS_FILE, "rb") as f:
+    results_file = GAUSS_RESULTS_FILE_START+str(duration)+'.pickle'
+    with open(results_file, "rb") as f:
         data = pickle.load(f)
     return data

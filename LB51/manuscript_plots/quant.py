@@ -14,18 +14,18 @@ MEASURED_STIM_FILE = 'data/proc/stim_efficiency.pickle'
 
 def quant():
     measured = get_measured_stim_efficiency()
-    sim_results = do_xbloch_sim.load_gauss_data()   # gaussian pulse case
-    sim_results = do_xbloch_sim.load_multipulse_data()    # SASE pulses case
+    #sim_results = do_xbloch_sim.load_gauss_data()   # gaussian pulse case
+    sim_results_5fs = do_xbloch_sim.load_multipulse_data(5.0)    # SASE pulses case
+    sim_results_25fs = do_xbloch_sim.load_multipulse_data(25.0)
     markus = get_markus_simulation()
-    fluences = sim_results['fluences']
-    stim_efficiencies = sim_results['stim_efficiencies']
-    _diagnostic_figure(sim_results)
+    _diagnostic_figure(sim_results_5fs)
     f, axs = plt.subplots(2, 1, figsize=(3.37, 4))
     axs[0].scatter(measured['short_fluences']*1E-12, measured['short_efficiencies'], label='5 fs Pulses\nExpt.')
     axs[1].scatter(measured['long_fluences']*1E-12, measured['long_efficiencies'], label='25 fs Pulses\nExpt.')
     axs[0].plot(markus['5fs']['fluence'], markus['5fs']['stim']*100, label='Rate Eqs.')
     axs[1].plot(markus['25fs']['fluence']*5, markus['25fs']['stim']*100, label='Rate Eqs.')
-    axs[0].plot(fluences*1E3, np.array(stim_efficiencies), color='k', label='Three Level\nSimulation')
+    axs[0].plot(sim_results_5fs['fluences']*1E3, np.array(sim_results_5fs['stim_efficiencies']), color='k', label='Three Level\nSimulation')
+    axs[1].plot(sim_results_25fs['fluences']*1E3, np.array(sim_results_25fs['stim_efficiencies']), color='k', label='Three Level\nSimulation')
     format_quant_plot(axs)
     #plt.savefig('../plots/2019_02_03_quant.eps', dpi=600)
     #plt.savefig('../plots/2019_02_03_quant.png', dpi=600)
