@@ -137,13 +137,13 @@ def _normalize_pulse(
     return t_y
 
 
-def demo_gauss_simulations():
+def demo_gauss_simulations(duration=5, bw=4):
     """Demonstrate Gaussian envelope SASE pulse simulations
     """
     t_y_list = []
     E_y_list = []
-    for _ in range(1000):
-        t, t_y = simulate_gaussian()
+    for _ in range(10):
+        t, t_y = simulate_gaussian(pulse_duration=duration, bw=bw)
         t_y_list.append(t_y)
         E = phot_fft_utils.convert_times_to_phots(t)
         E_y = phot_fft_utils.convert_time_signal_to_phot_signal(t_y)

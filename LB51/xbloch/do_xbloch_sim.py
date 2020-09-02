@@ -13,7 +13,7 @@ from LB51.xbloch import xbloch2020
 from LB51.xbloch import sase_sim
 
 # Simulation parameters:
-STRENGTHS = np.logspace(-1, 0.5, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
+STRENGTHS = np.logspace(-1, 1, 10)  # Fluences of incident X-ray pulses (in J/cm^2)
 STRENGTHS = np.append(1e-8, STRENGTHS)
 
 ABS_LIMITS = (777, 779)  # Region of absorption (in eV above 778 eV)
@@ -26,13 +26,17 @@ STIM_LIMITS = (
 SASE_RESULTS_FILE_START = "LB51/xbloch/results/multipulse_sase_"
 GAUSS_RESULTS_FILE_START = "LB51/xbloch/results/gauss_"
 
+N_PULSES_MANUSCRIPT = 4    # number of pulses to simulate for manuscript plots
+
 def run_manuscript_simulations():
     """Run simulations to be used in manuscript
     """
-    times_5fs = np.linspace(-25, 50, int(5e5))
-    simulate_multipulse_sase_series(5.0, 50, times_5fs)
-    times_25fs = np.linspace(-50, 100, int(5e5))
-    simulate_multipulse_sase_series(25.0, 50, times_25fs)
+    times_5fs = np.linspace(-25, 50, int(1e4))
+    simulate_multipulse_sase_series(5.0, N_PULSES_MANUSCRIPT, times_5fs)
+    print('Completed 5 fs simulations')
+    times_25fs = np.linspace(-50, 100, int(1e4))
+    simulate_multipulse_sase_series(25.0, N_PULSES_MANUSCRIPT, times_25fs)
+    print('Completed 25 fs simulations')
 
 def simulate_gaussian_case(duration: float = 0.5):
     """Simulate interaction of Gaussian pulses with 3-level-system vs fluence
