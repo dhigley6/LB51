@@ -31,10 +31,10 @@ N_PULSES_MANUSCRIPT = 4    # number of pulses to simulate for manuscript plots
 def run_manuscript_simulations():
     """Run simulations to be used in manuscript
     """
-    times_5fs = np.linspace(-25, 50, int(1e4))
+    times_5fs = np.linspace(-25, 50, int(1e5))
     simulate_multipulse_sase_series(5.0, N_PULSES_MANUSCRIPT, times_5fs)
     print('Completed 5 fs simulations')
-    times_25fs = np.linspace(-50, 100, int(1e4))
+    times_25fs = np.linspace(-50, 100, int(1e5))
     simulate_multipulse_sase_series(25.0, N_PULSES_MANUSCRIPT, times_25fs)
     print('Completed 25 fs simulations')
 
@@ -95,7 +95,7 @@ def simulate_multipulse_sase_series(duration: float = 5.0, n_pulses: int = 4, ti
     n_pulses: int
         Number of pulses to simulate
     """
-    E_in_list = [sase_sim.simulate_gaussian(duration)[1] for _ in range(n_pulses)]
+    E_in_list = [sase_sim.simulate_gaussian(duration, times=times)[1] for _ in range(n_pulses)]
     summary_result = simulate_multipulse_series(times, E_in_list)
     results_file = SASE_RESULTS_FILE_START+str(duration)+'.pickle'
     with open(results_file, "wb") as f:
@@ -263,6 +263,7 @@ def _run_single_pulse_sim(
         'E_phot_out' key: np.ndarray (complex)
             Spectral field strength of transmitted electric field
     """
+    assert len(times) == len(E_in)
     system = xbloch2020.make_model_system()
     E_in = E_in * np.sqrt(strength)
     sim_result = system.run_simulation(times, E_in)

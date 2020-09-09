@@ -23,6 +23,7 @@ def simulate_gaussian(
     E0: float = 777.0,
     bw: float = 4.0,
     pulse_fluence: float = 1.0,
+    times: np.ndarray = TIMES
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
 
@@ -44,10 +45,10 @@ def simulate_gaussian(
     t_y: one-dimensional np.ndarray (complex)
         Complex electric field envelope of simulated pulse (V/m)
     """
-    E = phot_fft_utils.convert_times_to_phots(TIMES)
+    E = phot_fft_utils.convert_times_to_phots(times)
     spectral_envelope = _calculate_envelope(E, bw, E0)
-    temporal_envelope = _calculate_envelope(TIMES, pulse_duration, 0)
-    t, t_y = _simulate(E, spectral_envelope, TIMES, temporal_envelope, pulse_fluence)
+    temporal_envelope = _calculate_envelope(times, pulse_duration, 0)
+    t, t_y = _simulate(E, spectral_envelope, times, temporal_envelope, pulse_fluence)
     return t, t_y
 
 
