@@ -16,32 +16,30 @@ MEASURED_STIM_FILE = "data/proc/stim_efficiency.pickle"
 
 def quant():
     measured = get_measured_stim_efficiency()
-    # sim_results = do_xbloch_sim.load_gauss_data()   # gaussian pulse case
-    sim_results_5fs = do_xbloch_sim.load_multipulse_data(5.0)  # SASE pulses case
+    sim_results_5fs = do_xbloch_sim.load_multipulse_data(5.0)
     sim_results_25fs = do_xbloch_sim.load_multipulse_data(25.0)
     markus = get_markus_simulation()
-    _diagnostic_figure(sim_results_5fs)
     f, axs = plt.subplots(2, 1, figsize=(3.37, 4))
     axs[0].scatter(
-        measured["short_fluences"] * 1e-12,
+        measured["short_fluences"],
         measured["short_efficiencies"],
         color="k",
         label="Expt.",
     )
     axs[1].scatter(
-        measured["long_fluences"] * 1e-12,
+        measured["long_fluences"],
         measured["long_efficiencies"],
         color="k",
         label="Expt.",
     )
     axs[0].plot(
-        sim_results_5fs["fluences"] * 1e3,
+        sim_results_5fs["fluences"] * 1e3,   # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_5fs["stim_efficiencies"]),
         color="tab:blue",
         label="Three Level\nSimulation",
     )
     axs[1].plot(
-        sim_results_25fs["fluences"] * 1e3,
+        sim_results_25fs["fluences"] * 1e3,    # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_25fs["stim_efficiencies"]),
         color="tab:blue",
         label="Three Level\nSimulation",
@@ -61,29 +59,6 @@ def quant():
     format_quant_plot(axs)
     plt.savefig("plots/2020_09_09_quant.eps", dpi=600)
     plt.savefig("plots/2020_09_09_quant.png", dpi=600)
-
-
-def _diagnostic_figure(sim_results):
-    """Show spectra on separate figure
-    """
-    f, axs = plt.subplots(2, 1, sharex=True)
-    axs[0].plot(
-        sim_results["phot"],
-        sim_results["summed_incident_intensities"][0] / sim_results["fluences"][0],
-    )
-    for i in range(len(sim_results["fluences"])):
-        intensity_difference = (
-            sim_results["summed_transmitted_intensities"][i]
-            - sim_results["summed_incident_intensities"][i]
-        ) / sim_results["fluences"][i]
-        axs[1].plot(
-            sim_results["phot"], intensity_difference, label=sim_results["fluences"][i]
-        )
-    axs[0].set_xlim((770, 784))
-    axs[0].set_ylabel("Intensity")
-    axs[1].set_ylabel("Intensity")
-    axs[1].set_ylabel("Photon Energy (eV)")
-    axs[1].legend(loc="best")
 
 
 def get_measured_stim_efficiency():
@@ -166,15 +141,15 @@ def run_quant_ana():
         long_fluences.append(fluence)
         long_stim_strengths.append(stim_strength)
     quant_data = {
-        "short_fluences": np.array(short_fluences) * 1e12,
-        "long_fluences": np.array(long_fluences) * 1e12,
+        "short_fluences": np.array(short_fluences),
+        "long_fluences": np.array(long_fluences),
         "short_efficiencies": 100 * np.array(short_stim_strengths),
         "long_efficiencies": 100 * np.array(long_stim_strengths),
     }
-    save_quant_data(quant_data)
+    _save_quant_data(quant_data)
 
 
-def save_quant_data(quant_data):
+def _save_quant_data(quant_data):
     """Save quantified data
     """
     with open(MEASURED_STIM_FILE, "wb") as f:
