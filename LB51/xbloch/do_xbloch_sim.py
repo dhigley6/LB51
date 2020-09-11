@@ -26,15 +26,15 @@ STIM_LIMITS = (
 SASE_RESULTS_FILE_START = "LB51/xbloch/results/multipulse_sase_"
 GAUSS_RESULTS_FILE_START = "LB51/xbloch/results/gauss_"
 
-N_PULSES_MANUSCRIPT = 4    # number of pulses to simulate for manuscript plots
+N_PULSES_MANUSCRIPT = 20    # number of pulses to simulate for manuscript plots
 
 def run_manuscript_simulations():
     """Run simulations to be used in manuscript
     """
-    times_5fs = np.linspace(-25, 50, int(1e3))
+    times_5fs = np.linspace(-25, 50, int(5e4))
     simulate_multipulse_sase_series(5.0, N_PULSES_MANUSCRIPT, times_5fs)
     print('Completed 5 fs simulations')
-    times_25fs = np.linspace(-50, 100, int(1e3))
+    times_25fs = np.linspace(-50, 100, int(5e4))
     simulate_multipulse_sase_series(25.0, N_PULSES_MANUSCRIPT, times_25fs)
     print('Completed 25 fs simulations')
 
