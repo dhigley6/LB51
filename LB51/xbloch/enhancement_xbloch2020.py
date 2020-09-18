@@ -4,6 +4,8 @@
 import numpy as np 
 
 from LB51.xbloch import xbloch2020
+from LB51.xbloch import stohr_enhancement
+from LB51.xbloch import sase_sim
 
 class EnhancementLambdaBloch(xbloch2020.LambdaBloch):
     """LambdaBloch with s&s enhancement factor of absorption reduction
@@ -34,17 +36,31 @@ class EnhancementLambdaBloch(xbloch2020.LambdaBloch):
         d32 = np.conj(self.d23)
         s_10 = self.s[1, 0]
         s_10_linear = self.linear_instance.s[1, 0]/self.linear_reduction
-        enhancement_factor = self._get_enhancement_factor(50)
+        #enhancement_factor = self._get_enhancement_factor()
+        enhancement_factor = self.enhancement_factor
         enhanced_s_10 = (s_10-s_10_linear)*enhancement_factor+s_10_linear
         polarization = 2 * xbloch2020.DENSITY * (self.d12 * enhanced_s_10 + d32 * self.s[1, 2])
         return polarization
 
-    def _get_enhancement_factor(self, intensity: float) -> float:
-        return 5.0
+    def _get_enhancement_factor(self, field_strengths) -> float:
+        """Get enhancement factor for last field strength in history
+        """
+        # original method: calculate at each time point
+        #field_strength = np.abs(self.history['field_envelope'][-1])
+        #intensity = np.sqrt(field_strength/sase_sim.FIELD_1E15)*1E15
+        #enhancement = stohr_enhancement.calculate_factors(intensity)
+        field_strengths = np.abs(field_strengths)
+        intensities = np.sqrt(field_strengths/sase_sim.FIELD_1E15)*1E15
+        print(np.mean(intensities))
+        average_weighted_intensity = np.trapz(intensities**2)/(np.trapz(intensities))
+        enhancement = stohr_enhancement.calculate_factors(average_weighted_intensity)
+        print(f'Calculated enhancement factor of {enhancement}, average intensity of {average_weighted_intensity}')
+        return enhancement
 
     def run_simulation(self, times: np.ndarray, field_envelope_list: np.ndarray) -> xbloch2020.LambdaBloch:
         """Run simulation with input incident electric field
         """
+        self.enhancement_factor = self._get_enhancement_factor(field_envelope_list)
         delta_ts = np.diff(times)
         for ind_minus_1, delta_t in enumerate(delta_ts):
             self._evolve_step(delta_t, field_envelope_list[ind_minus_1])
