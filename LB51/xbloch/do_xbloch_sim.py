@@ -10,11 +10,16 @@ from typing import List, Dict, Tuple, Union
 from joblib import Parallel, delayed
 
 from LB51.xbloch import xbloch2020
+from LB51.xbloch import enhancement_xbloch2020
 from LB51.xbloch import sase_sim
 
 # Simulation parameters:
 STRENGTHS = np.logspace(-1, 1, 10)  # Fluences of incident X-ray pulses (in J/cm^2)
 STRENGTHS = np.append(1e-8, STRENGTHS)
+
+# Below two lines only for experimenting
+# STRENGTHS = np.logspace(-1, 1, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
+# STRENGTHS = np.append(1e-8, STRENGTHS)
 
 ABS_LIMITS = (777, 779)  # Region of absorption (in eV above 778 eV)
 STIM_LIMITS = (
@@ -104,7 +109,8 @@ def simulate_multipulse_sase_series(duration: float = 5.0, n_pulses: int = 4, ti
 
 def simulate_multipulse_series(
     times: np.ndarray,
-    E_in_list: List[np.ndarray]
+    E_in_list: List[np.ndarray],
+    enhanced: bool = False
 ) -> Dict[str, Union[List[float], np.ndarray]]:
     """Simulate interaction of pulses with 3-level system vs fluence
 
@@ -114,6 +120,8 @@ def simulate_multipulse_series(
         Times of pulses (fs)
     E_in_list: List[1d np.ndarray]
         Electric field strengths of pulses (V/m)
+    enhanced: bool
+        True if we want to use s&s enhancement factor
 
     Returns:
     --------
@@ -136,7 +144,7 @@ def simulate_multipulse_series(
     stim_efficiencies = []
     for i, strength in enumerate(STRENGTHS):
         sim_results = Parallel(n_jobs=-1)(
-            delayed(_run_single_pulse_sim)(times, E_in, strength) for E_in in E_in_list
+            delayed(_run_single_pulse_sim)(times, E_in, strength, enhanced) for E_in in E_in_list
         )
         (
             phot,
@@ -240,7 +248,7 @@ def _get_summed_result(
 
 
 def _run_single_pulse_sim(
-    times: np.ndarray, E_in: np.ndarray, strength: float = 1e-3
+    times: np.ndarray, E_in: np.ndarray, strength: float = 1e-3, enhanced: bool = False
 ) -> Dict[str, np.ndarray]:
     """Run single pulse simulation
 
@@ -252,6 +260,8 @@ def _run_single_pulse_sim(
         Incident electric field strengths (V/m)
     strength: float
         Fluence of incident X-ray pulse (J/cm^2)
+    enhanced: bool
+        If True, use s&s enhancement factor
     
     Returns:
     --------
@@ -264,7 +274,10 @@ def _run_single_pulse_sim(
             Spectral field strength of transmitted electric field
     """
     assert len(times) == len(E_in)
-    system = xbloch2020.make_model_system()
+    if enhanced:
+        system = enhancement_xbloch2020.make_model_system()
+    else:
+        system = xbloch2020.make_model_system()
     E_in = E_in * np.sqrt(strength)
     sim_result = system.run_simulation(times, E_in)
     simplified_result = {

@@ -113,7 +113,7 @@ class LambdaBloch:
             "polarization_envelope": [],
         }
 
-    def run_simulation(self, times: List[float], field_envelope_list) -> "LambdaBloch":
+    def run_simulation(self, times: np.ndarray, field_envelope_list: np.ndarray) -> "LambdaBloch":
         """Run simulation with input incident electric field
         
         Parameters
