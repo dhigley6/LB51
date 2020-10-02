@@ -2,6 +2,7 @@
 """
 
 import numpy as np
+np.random.seed(0)
 import matplotlib.pyplot as plt
 import pickle
 
@@ -20,17 +21,25 @@ def quant():
     sim_results_25fs = do_xbloch_sim.load_multipulse_data(25.0)
     markus = get_markus_simulation()
     f, axs = plt.subplots(2, 1, figsize=(3.37, 4))
-    axs[0].scatter(
+    axs[0].errorbar(
         measured["short_fluences"],
         measured["short_efficiencies"],
+        xerr=measured['short_fluences']*0.3,
+        yerr=measured['short_stds'],
         color="k",
         label="Expt.",
+        linestyle='',
+        marker='o',
     )
-    axs[1].scatter(
+    axs[1].errorbar(
         measured["long_fluences"],
         measured["long_efficiencies"],
+        xerr=measured['long_fluences']*0.3,
+        yerr=measured['long_stds'],
         color="k",
         label="Expt.",
+        linestyle='',
+        marker='o',
     )
     axs[0].plot(
         sim_results_5fs["fluences"] * 1e3,   # convert from J/cm^2 to mJ/cm^2
@@ -127,8 +136,8 @@ def run_quant_ana():
     short_stim_strengths = []
     for run_set in short_run_sets_list:
         fluence = short_data[run_set]["sum_intact"]["fluence"]
-        if run_set == "99":
-            fluence = 1898
+        #if run_set == "99":
+            #fluence = 1898
         stim_strength = get_stim_efficiency(short_data[run_set])
         short_fluences.append(fluence)
         short_stim_strengths.append(stim_strength)
@@ -160,13 +169,14 @@ def get_stim_efficiency(data):
     ssrl_res_absorption = (
         data["sum_intact"]["ssrl_absorption"] - data["sum_intact"]["ssrl_absorption"][0]
     )
+    a = 1/0
     ssrl_res_trans = np.exp(-1 * ssrl_res_absorption)
     res_transmitted = data["sum_intact"]["no_sam_spec"] * ssrl_res_trans
     res_absorbed = data["sum_intact"]["no_sam_spec"] - res_transmitted
     phot = data["sum_intact"]["phot"]
     abs_region = (phot > 774) & (phot < 780)
     res_absorbed_sum = np.trapz(res_absorbed[abs_region])
-    stim_region = (phot > 773.5) & (phot < 775)
+    stim_region = (phot > 773) & (phot < 775)
     stim = data["sum_intact"]["exc_sam_spec"]
     stim[stim < 0] = 0  # clip negative values to zero
     stim_sum = np.trapz(stim[stim_region])
