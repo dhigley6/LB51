@@ -66,8 +66,8 @@ def quant():
         label="Rate Eqs.",
     )
     format_quant_plot(axs)
-    plt.savefig("plots/2020_09_09_quant.eps", dpi=600)
-    plt.savefig("plots/2020_09_09_quant.png", dpi=600)
+    plt.savefig("plots/2020_10_05_quant.eps", dpi=600)
+    plt.savefig("plots/2020_10_05_quant.png", dpi=600)
 
 
 def get_measured_stim_efficiency():
@@ -79,13 +79,13 @@ def get_measured_stim_efficiency():
 def format_quant_plot(axs):
     axs[0].set_xlabel("Fluence (mJ/cm$^2$)")
     axs[0].set_ylabel("Stim. Scattering\nEfficiency (%)")
-    axs[0].set_xlim((-100, 2000))
-    axs[0].set_ylim((0, 10))
+    axs[0].set_xlim((-100, 1600))
+    axs[0].set_ylim((-1, 10))
     axs[1].set_xlim((-300, 10000))
-    axs[1].set_ylim((0, 10))
+    axs[1].set_ylim((-1, 10))
     axs[1].set_xlabel("Fluence (mJ/cm$^2$)")
     axs[1].set_ylabel("Stim. Scattering\nEfficiency (%)")
-    axs[0].legend(loc="upper left", ncol=2)
+    axs[0].legend(loc="upper left", frameon=False)
     axs[0].text(
         0.9,
         0.1,
@@ -96,8 +96,8 @@ def format_quant_plot(axs):
         transform=axs[0].transAxes,
     )
     axs[1].text(
-        0.1,
         0.9,
+        0.1,
         "b",
         fontsize=10,
         weight="bold",
