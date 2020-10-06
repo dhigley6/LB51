@@ -46,8 +46,8 @@ def summary():
     axs[0, 0].plot(emission['x']-0.4, -1*emission['y']+0.2, label='Emission')
     axs[0, 1].plot(emission['x']-0.4, -1*emission['y']+0.2, label='Emission')
     format_summary_plot(f, axs)
-    #plt.savefig('plots/2020_03_22_summary.eps', dpi=600)
-    #plt.savefig('plots/2020_03_22_summary.png', dpi=600)
+    plt.savefig('plots/2020_10_05_summary.eps', dpi=600)
+    plt.savefig('plots/2020_10_05_summary.png', dpi=600)
     
 def format_summary_plot(f, axs):
     def place_vlines():
@@ -58,7 +58,7 @@ def format_summary_plot(f, axs):
                 ax.axvline(vline_loc, linestyle='--', color='k')
     place_vlines()
     axs[1, 0].set_xlim((769, 787))
-    axs[1, 0].set_ylim((-0.25, 4.75))
+    axs[1, 0].set_ylim((-0.5, 4.75))
     #f.add_subplot(111, frameon=False)
     #plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     #plt.xlabel('Photon Energy (eV)')
@@ -82,6 +82,12 @@ def format_summary_plot(f, axs):
                    fontsize=8))
     texts.append(axs[1, 0].text(0.3, 0.93, '5 fs', transform=axs[1, 0].transAxes, fontsize=10, backgroundcolor='w'))
     texts.append(axs[1, 1].text(0.3, 0.93, '25 fs', transform=axs[1, 1].transAxes, fontsize=10, backgroundcolor='w'))
+    texts.append(axs[1, 0].text(774.5, -0.35, r'$\alpha$', transform=axs[1, 0].transData, fontsize=8, horizontalalignment='center'))
+    texts.append(axs[1, 0].text(776.5, -0.35, r'$\beta$', transform=axs[1, 0].transData, fontsize=8, horizontalalignment='center'))
+    texts.append(axs[1, 0].text(778, -0.35, r'$\gamma$', transform=axs[1, 0].transData, fontsize=8, horizontalalignment='center'))
+    texts.append(axs[1, 1].text(774.5, -0.35, r'$\alpha$', transform=axs[1, 1].transData, fontsize=8, horizontalalignment='center'))
+    texts.append(axs[1, 1].text(776.5, -0.35, r'$\beta$', transform=axs[1, 1].transData, fontsize=8, horizontalalignment='center'))
+    texts.append(axs[1, 1].text(778, -0.35, r'$\gamma$', transform=axs[1, 1].transData, fontsize=8, horizontalalignment='center'))
     for text in texts:
         text.set_path_effects([path_effects.Stroke(linewidth=5, foreground='white'),
                                path_effects.Normal()])

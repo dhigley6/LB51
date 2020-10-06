@@ -80,8 +80,8 @@ def overview_plot():
     nonlinear_spectra_plot(axs[0, 1], short_data['99'])
     xas_plot(axs[1, 1], short_data['359'], short_data['99'])
     format_data_overview_plot(f, axs)
-    #plt.savefig('plots/2020_03_23_overview.eps', dpi=600)
-    #plt.savefig('plots/2020_03_23_overview.png', dpi=600)
+    plt.savefig('plots/2020_10_06_overview.eps', dpi=600)
+    plt.savefig('plots/2020_10_06_overview.png', dpi=600)
 
 def format_data_overview_plot(f, axs):
     axs[1, 1].set_xlim((770, 783))
@@ -112,7 +112,7 @@ def format_data_overview_plot(f, axs):
     axs[0, 0].set_ylim((-0.5, 2.5))
     axs[1, 0].set_ylim((-0.5, 1.1))
     axs[0, 1].set_ylim((-0.3, 1.25))
-    axs[0, 1].annotate('i', xy=(774.5, 0.1), xycoords='data', xytext=(772, 0.6), textcoords='data', arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=4), fontsize=10)
-    axs[0, 1].annotate('ii', xy=(776.25, -0.05), xycoords='data', xytext=(780, -0.2), textcoords='data', arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=4), fontsize=10, verticalalignment='center')
-    axs[0, 1].annotate('iii', xy=(778, 0.15), xycoords='data', xytext=(780.5, 0.8), textcoords='data', arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=4), fontsize=10)
+    axs[0, 1].annotate(r'$\alpha$', xy=(774.5, 0.1), xycoords='data', xytext=(772, 0.6), textcoords='data', arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=4), fontsize=10)
+    axs[0, 1].annotate(r'$\beta$', xy=(776.25, -0.05), xycoords='data', xytext=(780, -0.2), textcoords='data', arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=4), fontsize=10, verticalalignment='center')
+    axs[0, 1].annotate(r'$\gamma$', xy=(778, 0.15), xycoords='data', xytext=(780.5, 0.8), textcoords='data', arrowprops=dict(facecolor='black', shrink=0.05, width=1, headwidth=4), fontsize=10)
     plt.tight_layout(pad=0.8, w_pad=0, h_pad=0)
