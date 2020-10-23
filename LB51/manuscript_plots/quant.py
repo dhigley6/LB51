@@ -66,8 +66,8 @@ def quant():
         label="Rate Eqs.",
     )
     format_quant_plot(axs)
-    plt.savefig("plots/2020_10_06_quant.eps", dpi=600)
-    plt.savefig("plots/2020_10_06_quant.png", dpi=600)
+    plt.savefig("plots/2020_10_23_quant.eps", dpi=600)
+    plt.savefig("plots/2020_10_23_quant.png", dpi=600)
 
 
 def get_measured_stim_efficiency():
@@ -121,7 +121,24 @@ def format_quant_plot(axs):
         transform=axs[1].transAxes,
     )
     # plt.legend(loc='best', frameon=True)
+    for ax in axs:
+        second_ax = ax.secondary_yaxis('right', functions=(efficiency_to_amplification, amplification_to_efficiency))
+        second_ax.set_ylabel('RIXS Signal\nAmplification (Millions)')
     plt.tight_layout()
+
+def efficiency_to_amplification(x):
+    percent_to_decimal = 0.01
+    spectrometer_transmission = 0.1
+    traditional_efficiency = 1E-8
+    millions = 1E6
+    return x*percent_to_decimal*spectrometer_transmission/traditional_efficiency/millions
+
+def amplification_to_efficiency(x):
+    percent_to_decimal = 0.01
+    spectrometer_transmission = 0.1
+    traditional_efficiency = 1E-8
+    millions = 1E6
+    return x*millions*traditional_efficiency/(percent_to_decimal*spectrometer_transmission)
 
 
 def run_quant_ana():
