@@ -66,8 +66,8 @@ def quant():
         label="Rate Eqs.",
     )
     format_quant_plot(axs)
-    plt.savefig("plots/2020_10_23_quant.eps", dpi=600)
-    plt.savefig("plots/2020_10_23_quant.png", dpi=600)
+    plt.savefig("plots/2020_11_09_quant.eps", dpi=600)
+    plt.savefig("plots/2020_11_09_quant.png", dpi=600)
 
 
 def get_measured_stim_efficiency():
@@ -78,13 +78,13 @@ def get_measured_stim_efficiency():
 
 def format_quant_plot(axs):
     axs[0].set_xlabel("Fluence (mJ/cm$^2$)")
-    axs[0].set_ylabel("Inelastic Stim.\nScattering Efficiency (%)")
+    axs[0].set_ylabel(" ")
     axs[0].set_xlim((-100, 1600))
     axs[0].set_ylim((-1, 10))
     axs[1].set_xlim((-300, 10000))
     axs[1].set_ylim((-1, 10))
     axs[1].set_xlabel("Fluence (mJ/cm$^2$)")
-    axs[1].set_ylabel("Inelastic Stim.\nScattering Efficiency (%)")
+    #axs[1].set_ylabel("Inelastic Stim.\nScattering Efficiency (%)")
     axs[0].legend(loc="upper left", frameon=False)
     axs[0].text(
         0.9,
@@ -123,8 +123,14 @@ def format_quant_plot(axs):
     # plt.legend(loc='best', frameon=True)
     for ax in axs:
         second_ax = ax.secondary_yaxis('right', functions=(efficiency_to_amplification, amplification_to_efficiency))
-        second_ax.set_ylabel('RIXS Signal\nAmplification (Millions)')
+        second_ax.set_ylabel(' ')
     plt.tight_layout()
+    big_ax = plt.gcf().add_subplot(111, frameon=False)
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    big_ax.set_ylabel('Inelastic Stim. Scattering Efficiency (%)')
+    second_big_ax = big_ax.secondary_yaxis('right', functions=(efficiency_to_amplification, amplification_to_efficiency), frameon=False)
+    second_big_ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    second_big_ax.set_ylabel('RIXS Signal Amplification (Millions)')
 
 def efficiency_to_amplification(x):
     percent_to_decimal = 0.01
