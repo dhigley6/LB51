@@ -2,6 +2,7 @@
 """
 
 import numpy as np
+
 np.random.seed(0)
 import matplotlib.pyplot as plt
 import pickle
@@ -24,31 +25,31 @@ def quant():
     axs[0].errorbar(
         measured["short_fluences"],
         measured["short_efficiencies"],
-        xerr=measured['short_fluences']*0.3,
-        yerr=measured['short_stds'],
+        xerr=measured["short_fluences"] * 0.3,
+        yerr=measured["short_stds"],
         color="k",
         label="Expt.",
-        linestyle='',
-        marker='o',
+        linestyle="",
+        marker="o",
     )
     axs[1].errorbar(
         measured["long_fluences"],
         measured["long_efficiencies"],
-        xerr=measured['long_fluences']*0.3,
-        yerr=measured['long_stds'],
+        xerr=measured["long_fluences"] * 0.3,
+        yerr=measured["long_stds"],
         color="k",
         label="Expt.",
-        linestyle='',
-        marker='o',
+        linestyle="",
+        marker="o",
     )
     axs[0].plot(
-        sim_results_5fs["fluences"] * 1e3,   # convert from J/cm^2 to mJ/cm^2
+        sim_results_5fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_5fs["stim_efficiencies"]),
         color="tab:blue",
         label="Three Level\nSimulation",
     )
     axs[1].plot(
-        sim_results_25fs["fluences"] * 1e3,    # convert from J/cm^2 to mJ/cm^2
+        sim_results_25fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_25fs["stim_efficiencies"]),
         color="tab:blue",
         label="Three Level\nSimulation",
@@ -84,7 +85,7 @@ def format_quant_plot(axs):
     axs[1].set_xlim((-300, 10000))
     axs[1].set_ylim((-1, 10))
     axs[1].set_xlabel("Fluence (mJ/cm$^2$)")
-    #axs[1].set_ylabel("Inelastic Stim.\nScattering Efficiency (%)")
+    # axs[1].set_ylabel("Inelastic Stim.\nScattering Efficiency (%)")
     axs[0].legend(loc="upper left", frameon=False)
     axs[0].text(
         0.9,
@@ -122,34 +123,55 @@ def format_quant_plot(axs):
     )
     # plt.legend(loc='best', frameon=True)
     for ax in axs:
-        second_ax = ax.secondary_yaxis('right', functions=(efficiency_to_amplification, amplification_to_efficiency))
-        second_ax.set_ylabel(' ')
+        second_ax = ax.secondary_yaxis(
+            "right",
+            functions=(efficiency_to_amplification, amplification_to_efficiency),
+        )
+        second_ax.set_ylabel(" ")
     plt.tight_layout()
     big_ax = plt.gcf().add_subplot(111, frameon=False)
-    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    big_ax.set_ylabel('Inelastic Stim. Scattering Efficiency (%)')
-    second_big_ax = big_ax.secondary_yaxis('right', functions=(efficiency_to_amplification, amplification_to_efficiency), frameon=False)
-    second_big_ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    second_big_ax.set_ylabel('RIXS Signal Amplification (Millions)')
+    plt.tick_params(labelcolor="none", top=False, bottom=False, left=False, right=False)
+    big_ax.set_ylabel("Inelastic Stim. Scattering Efficiency (%)")
+    second_big_ax = big_ax.secondary_yaxis(
+        "right",
+        functions=(efficiency_to_amplification, amplification_to_efficiency),
+        frameon=False,
+    )
+    second_big_ax.tick_params(
+        labelcolor="none", top=False, bottom=False, left=False, right=False
+    )
+    second_big_ax.set_ylabel("RIXS Signal Amplification (Millions)")
+
 
 def efficiency_to_amplification(x):
     percent_to_decimal = 0.01
     spectrometer_transmission = 0.1
-    traditional_efficiency = 1E-8
-    millions = 1E6
-    return x*percent_to_decimal*spectrometer_transmission/traditional_efficiency/millions
+    traditional_efficiency = 1e-8
+    millions = 1e6
+    return (
+        x
+        * percent_to_decimal
+        * spectrometer_transmission
+        / traditional_efficiency
+        / millions
+    )
+
 
 def amplification_to_efficiency(x):
     percent_to_decimal = 0.01
     spectrometer_transmission = 0.1
-    traditional_efficiency = 1E-8
-    millions = 1E6
-    return x*millions*traditional_efficiency/(percent_to_decimal*spectrometer_transmission)
+    traditional_efficiency = 1e-8
+    millions = 1e6
+    return (
+        x
+        * millions
+        * traditional_efficiency
+        / (percent_to_decimal * spectrometer_transmission)
+    )
 
 
 def run_quant_ana():
-    """Calculate stim. strength of expt. data
-    """
+    """Calculate stim. strength of expt. data"""
     short_data = LB51_get_cal_data.get_short_pulse_data()
     long_data = LB51_get_cal_data.get_long_pulse_data()
     short_run_sets_list = ["99", "290", "359", "388"]
@@ -157,8 +179,8 @@ def run_quant_ana():
     short_stim_strengths = []
     for run_set in short_run_sets_list:
         fluence = short_data[run_set]["sum_intact"]["fluence"]
-        #if run_set == "99":
-            #fluence = 1898
+        # if run_set == "99":
+        # fluence = 1898
         stim_strength = get_stim_efficiency(short_data[run_set])
         short_fluences.append(fluence)
         short_stim_strengths.append(stim_strength)
@@ -180,8 +202,7 @@ def run_quant_ana():
 
 
 def _save_quant_data(quant_data):
-    """Save quantified data
-    """
+    """Save quantified data"""
     with open(MEASURED_STIM_FILE, "wb") as f:
         pickle.dump(quant_data, f)
 
@@ -190,7 +211,7 @@ def get_stim_efficiency(data):
     ssrl_res_absorption = (
         data["sum_intact"]["ssrl_absorption"] - data["sum_intact"]["ssrl_absorption"][0]
     )
-    a = 1/0
+    a = 1 / 0
     ssrl_res_trans = np.exp(-1 * ssrl_res_absorption)
     res_transmitted = data["sum_intact"]["no_sam_spec"] * ssrl_res_trans
     res_absorbed = data["sum_intact"]["no_sam_spec"] - res_transmitted

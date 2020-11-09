@@ -31,17 +31,18 @@ STIM_LIMITS = (
 SASE_RESULTS_FILE_START = "LB51/xbloch/results/multipulse_sase_"
 GAUSS_RESULTS_FILE_START = "LB51/xbloch/results/gauss_"
 
-N_PULSES_MANUSCRIPT = 20    # number of pulses to simulate for manuscript plots
+N_PULSES_MANUSCRIPT = 20  # number of pulses to simulate for manuscript plots
+
 
 def run_manuscript_simulations():
-    """Run simulations to be used in manuscript
-    """
+    """Run simulations to be used in manuscript"""
     times_5fs = np.linspace(-25, 50, int(5e4))
     simulate_multipulse_sase_series(5.0, N_PULSES_MANUSCRIPT, times_5fs)
-    print('Completed 5 fs simulations')
+    print("Completed 5 fs simulations")
     times_25fs = np.linspace(-50, 100, int(5e4))
     simulate_multipulse_sase_series(25.0, N_PULSES_MANUSCRIPT, times_25fs)
-    print('Completed 25 fs simulations')
+    print("Completed 25 fs simulations")
+
 
 def simulate_gaussian_case(duration: float = 0.5):
     """Simulate interaction of Gaussian pulses with 3-level-system vs fluence
@@ -57,16 +58,12 @@ def simulate_gaussian_case(duration: float = 0.5):
     times = sase_sim.TIMES
     E_in_list = [sase_sim._normalize_pulse(times, gauss(times, 0, sigma=duration), 1)]
     summary_result = simulate_multipulse_series(times, E_in_list)
-    results_file = GAUSS_RESULTS_FILE_START+str(duration)+'.pickle'
+    results_file = GAUSS_RESULTS_FILE_START + str(duration) + ".pickle"
     with open(results_file, "wb") as f:
         pickle.dump(summary_result, f)
 
 
-def gauss(
-    x: np.ndarray, 
-    t0: float, 
-    sigma: float
-) -> np.ndarray:
+def gauss(x: np.ndarray, t0: float, sigma: float) -> np.ndarray:
     """Calculate Gaussian pulse with t0 center and sigma width
 
     Parameters:
@@ -77,7 +74,7 @@ def gauss(
         Location of Gaussian peak
     sigma: float
         Width of Gaussian
-    
+
     Returns:
     --------
     gaussian: 1d np.ndarray
@@ -89,7 +86,9 @@ def gauss(
     return gaussian
 
 
-def simulate_multipulse_sase_series(duration: float = 5.0, n_pulses: int = 4, times: np.ndarray = sase_sim.TIMES):
+def simulate_multipulse_sase_series(
+    duration: float = 5.0, n_pulses: int = 4, times: np.ndarray = sase_sim.TIMES
+):
     """Simulate interaction of SASE pulses with 3-level-system vs fluence
 
     Results are saved in SASE_RESULTS_FILE as a dictionary with the
@@ -100,17 +99,17 @@ def simulate_multipulse_sase_series(duration: float = 5.0, n_pulses: int = 4, ti
     n_pulses: int
         Number of pulses to simulate
     """
-    E_in_list = [sase_sim.simulate_gaussian(duration, times=times)[1] for _ in range(n_pulses)]
+    E_in_list = [
+        sase_sim.simulate_gaussian(duration, times=times)[1] for _ in range(n_pulses)
+    ]
     summary_result = simulate_multipulse_series(times, E_in_list)
-    results_file = SASE_RESULTS_FILE_START+str(duration)+'.pickle'
+    results_file = SASE_RESULTS_FILE_START + str(duration) + ".pickle"
     with open(results_file, "wb") as f:
         pickle.dump(summary_result, f)
 
 
 def simulate_multipulse_series(
-    times: np.ndarray,
-    E_in_list: List[np.ndarray],
-    enhanced: bool = False
+    times: np.ndarray, E_in_list: List[np.ndarray], enhanced: bool = False
 ) -> Dict[str, Union[List[float], np.ndarray]]:
     """Simulate interaction of pulses with 3-level system vs fluence
 
@@ -144,7 +143,8 @@ def simulate_multipulse_series(
     stim_efficiencies = []
     for i, strength in enumerate(STRENGTHS):
         sim_results = Parallel(n_jobs=-1)(
-            delayed(_run_single_pulse_sim)(times, E_in, strength, enhanced) for E_in in E_in_list
+            delayed(_run_single_pulse_sim)(times, E_in, strength, enhanced)
+            for E_in in E_in_list
         )
         (
             phot,
@@ -175,7 +175,7 @@ def simulate_multipulse_series(
 def _get_stim_efficiency(
     phot: np.ndarray,
     intensity_difference: np.ndarray,
-    linear_intensity_difference: np.ndarray
+    linear_intensity_difference: np.ndarray,
 ) -> float:
     """Return stimulated efficiency in %
 
@@ -198,7 +198,9 @@ def _get_stim_efficiency(
     abs_region = (phot > ABS_LIMITS[0]) & (phot < ABS_LIMITS[1])
     abs_strength = -1 * np.trapz(linear_intensity_difference[abs_region])
     change_from_linear = intensity_difference - linear_intensity_difference
-    change_from_linear[change_from_linear < 0] = 0     # clip negative values to zero (shouldn't change result significantly for simulation)
+    change_from_linear[
+        change_from_linear < 0
+    ] = 0  # clip negative values to zero (shouldn't change result significantly for simulation)
     stim_region = (phot > STIM_LIMITS[0]) & (phot < STIM_LIMITS[1])
     stim_strength = np.trapz(change_from_linear[stim_region])
     stim_efficiency = 100 * stim_strength / abs_strength
@@ -219,7 +221,7 @@ def _get_summed_result(
             Incident spectral field strength
         'E_phot_out': 1d np.ndarray
             Transmitted spectral field strength
-        
+
     Returns:
     --------
     phot: 1d np.ndarray
@@ -262,7 +264,7 @@ def _run_single_pulse_sim(
         Fluence of incident X-ray pulse (J/cm^2)
     enhanced: bool
         If True, use s&s enhancement factor
-    
+
     Returns:
     --------
     simplified_result: Dict[str, np.ndarray]
@@ -297,7 +299,7 @@ def load_multipulse_data(duration: float) -> Dict[str, Union[List[float], np.nda
     data: Dictionary
         Format is the same as that returned by simulate_multipulse_series
     """
-    results_file = SASE_RESULTS_FILE_START+str(duration)+'.pickle'
+    results_file = SASE_RESULTS_FILE_START + str(duration) + ".pickle"
     with open(results_file, "rb") as f:
         data = pickle.load(f)
     return data
@@ -311,7 +313,7 @@ def load_gauss_data(duration: float) -> Dict[str, Union[List[float], np.ndarray]
     data: Dictionary
         Format is the same as that returned by simulate_multipulse_series
     """
-    results_file = GAUSS_RESULTS_FILE_START+str(duration)+'.pickle'
+    results_file = GAUSS_RESULTS_FILE_START + str(duration) + ".pickle"
     with open(results_file, "rb") as f:
         data = pickle.load(f)
     return data

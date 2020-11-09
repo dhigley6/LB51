@@ -15,7 +15,7 @@ TIMES = np.linspace(-25, 50, int(5e4))
 FIELD_1E15 = 8.68e10  # Electric field strength in V/m that corresponds to
 # 10^15 W/cm^2 or 1 J/cm^2/fs
 
-np.random.seed(42)   # if we want reproducible results
+np.random.seed(42)  # if we want reproducible results
 
 
 def simulate_gaussian(
@@ -23,7 +23,7 @@ def simulate_gaussian(
     E0: float = 777.0,
     bw: float = 4.0,
     pulse_fluence: float = 1.0,
-    times: np.ndarray = TIMES
+    times: np.ndarray = TIMES,
 ) -> Tuple[np.ndarray, np.ndarray]:
     """Simulate a SASE pulse with Gaussian spectral and temporal envelopes
 
@@ -139,8 +139,7 @@ def _normalize_pulse(
 
 
 def demo_gauss_simulations(duration=5, bw=4):
-    """Demonstrate Gaussian envelope SASE pulse simulations
-    """
+    """Demonstrate Gaussian envelope SASE pulse simulations"""
     t_y_list = []
     E_y_list = []
     for _ in range(10):

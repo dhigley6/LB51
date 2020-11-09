@@ -5,8 +5,9 @@ import numpy as np
 
 from LB51.xbloch import sase_sim
 
+
 def test_normalization(pulse_fluence=1.0):
     t, t_y = sase_sim.simulate_gaussian()
-    integral = np.trapz(np.abs(t_y)**2, x=t)
-    integral = integral/(sase_sim.FIELD_1E15**2)
+    integral = np.trapz(np.abs(t_y) ** 2, x=t)
+    integral = integral / (sase_sim.FIELD_1E15 ** 2)
     assert np.isclose(integral, 1)

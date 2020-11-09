@@ -9,8 +9,7 @@ from LB51.xbloch import sase_sim
 
 
 class EnhancementLambdaBloch(xbloch2020.LambdaBloch):
-    """LambdaBloch with s&s enhancement factor of absorption reduction
-    """
+    """LambdaBloch with s&s enhancement factor of absorption reduction"""
 
     def __init__(
         self,
@@ -25,7 +24,7 @@ class EnhancementLambdaBloch(xbloch2020.LambdaBloch):
         xbloch2020.LambdaBloch.__init__(self, E1, E2, E3, d12, d23, omega, gamma_a)
         # factor by which to reduce strength of electric field applied
         # to estimate linear response:
-        self.linear_reduction = 1e-5  
+        self.linear_reduction = 1e-5
         self.linear_instance = xbloch2020.LambdaBloch(
             E1, E2, E3, d12, d23, omega, gamma_a
         )

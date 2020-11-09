@@ -2,8 +2,9 @@
 """
 
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+
 
 def make_figure(system):
     system.density_panda_.plot(subplots=True)
-    plt.xlabel('Time (fs)')
+    plt.xlabel("Time (fs)")
