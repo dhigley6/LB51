@@ -19,8 +19,8 @@ def summary():
             no_sam_spec = data["sum_intact"]["no_sam_spec"] / norm
             exc_spec = data["sum_intact"]["exc_sam_spec"] / norm
             offset = ind * 1.5
-            ax.plot(phot, offset + exc_spec * 5, color="k", label="5 X Diff.")
-            ax.plot(phot, offset + no_sam_spec, "k--", label="Ref.")
+            ax.plot(phot, offset + exc_spec * 5, color="k", label="5 X Nonlin.")
+            ax.plot(phot, offset + no_sam_spec, "k--", label="Incident")
             ax.fill_between(
                 phot,
                 offset + np.zeros_like(phot),
@@ -39,7 +39,7 @@ def summary():
             )
             if ind == 0:
                 handles, labels = axs[1, 1].get_legend_handles_labels()
-                f.legend(handles, labels, loc=(0.45, 0.6), frameon=True)
+                f.legend(handles, labels, loc=(0.415, 0.6), frameon=True)
 
     long_data = LB51_get_cal_data.get_long_pulse_data()
     short_data = LB51_get_cal_data.get_short_pulse_data()
@@ -69,8 +69,8 @@ def summary():
     axs[0, 0].plot(emission["x"] - 0.4, -1 * emission["y"] + 0.2, label="Emission")
     axs[0, 1].plot(emission["x"] - 0.4, -1 * emission["y"] + 0.2, label="Emission")
     format_summary_plot(f, axs)
-    plt.savefig("plots/2020_10_05_summary.eps", dpi=600)
-    plt.savefig("plots/2020_10_05_summary.png", dpi=600)
+    plt.savefig("plots/2020_11_26_summary.eps", dpi=600)
+    plt.savefig("plots/2020_11_26_summary.png", dpi=600)
 
 
 def format_summary_plot(f, axs):
