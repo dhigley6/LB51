@@ -54,21 +54,22 @@ def quant():
         color="tab:blue",
         label="Three Level\nSimulation",
     )
-    axs[0].plot(
-        markus["5fs"]["fluence"],
-        markus["5fs"]["stim"] * 100,
-        color="tab:orange",
-        label="Rate Eqs.",
-    )
-    axs[1].plot(
-        markus["25fs"]["fluence"],
-        markus["25fs"]["stim"] * 100,
-        color="tab:orange",
-        label="Rate Eqs.",
-    )
+    #
+    #axs[0].plot(
+    #    markus["5fs"]["fluence"],
+    #    markus["5fs"]["stim"] * 100,
+    #    color="tab:orange",
+    #    label="Rate Eqs.",
+    #)
+    #axs[1].plot(
+    #    markus["25fs"]["fluence"],
+    #    markus["25fs"]["stim"] * 100,
+    #    color="tab:orange",
+    #    label="Rate Eqs.",
+    #)
     format_quant_plot(axs)
-    plt.savefig("plots/2020_11_09_quant.eps", dpi=600)
-    plt.savefig("plots/2020_11_09_quant.png", dpi=600)
+    plt.savefig("plots/2020_12_28_quant.eps", dpi=600)
+    plt.savefig("plots/2020_12_28_quant.png", dpi=600)
 
 
 def get_measured_stim_efficiency():
