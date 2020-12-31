@@ -42,13 +42,13 @@ def quant():
         linestyle="",
         marker="o",
     )
-    axs[0].plot(
+    axs[0].loglog(
         sim_results_5fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_5fs["stim_efficiencies"]),
         color="tab:blue",
         label="Three Level\nSimulation",
     )
-    axs[1].plot(
+    axs[1].loglog(
         sim_results_25fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_25fs["stim_efficiencies"]),
         color="tab:blue",
@@ -68,8 +68,8 @@ def quant():
     #    label="Rate Eqs.",
     #)
     format_quant_plot(axs)
-    plt.savefig("plots/2020_12_28_quant.eps", dpi=600)
-    plt.savefig("plots/2020_12_28_quant.png", dpi=600)
+    #plt.savefig("plots/2020_12_28_quant.eps", dpi=600)
+    #plt.savefig("plots/2020_12_28_quant.png", dpi=600)
 
 
 def get_measured_stim_efficiency():
