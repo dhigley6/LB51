@@ -113,7 +113,7 @@ def overview_plot():
 
     short_data = LB51_get_cal_data.get_short_pulse_data()
     long_data = LB51_get_cal_data.get_long_pulse_data()
-    f, axs = plt.subplots(2, 2, sharex=True, figsize=(3.37, 4))
+    f, axs = plt.subplots(2, 2, figsize=(3.37, 4))
     shots_to_plot = [
         20,
         23,
@@ -124,11 +124,14 @@ def overview_plot():
     nonlinear_spectra_plot(axs[0, 1], short_data["99"])
     xas_plot(axs[1, 1], short_data["359"], short_data["99"])
     format_data_overview_plot(f, axs)
-    plt.savefig("plots/2020_10_23_overview_for_setup.eps", dpi=600)
-    plt.savefig("plots/2020_10_23_overview_for_setup.png", dpi=600)
+    plt.savefig("plots/2021_01_04_overview_for_setup.eps", dpi=600)
+    plt.savefig("plots/2021_01_04_overview_for_setup.png", dpi=600)
 
 
 def format_data_overview_plot(f, axs):
+    axs[0, 0].set_xlim((770, 788))
+    axs[0, 0].set_xticks((770, 775, 780, 785))
+    axs[0, 0].set_xlabel('Photon Energy (eV)')
     axs[1, 1].set_xlim((770, 788))
     axs[1, 1].set_xticks((770, 775, 780))
     axs[0, 1].yaxis.tick_right()
@@ -144,15 +147,15 @@ def format_data_overview_plot(f, axs):
     axs[1, 1].set_ylabel("XAS")
     axs[0, 1].yaxis.set_label_position("right")
     axs[1, 1].yaxis.set_label_position("right")
-    axs[0, 0].text(
-        0.9,
-        0.9,
-        "a",
-        fontsize=10,
-        weight="bold",
-        horizontalalignment="center",
-        transform=axs[0, 0].transAxes,
-    )
+    #axs[0, 0].text(
+    #    0.9,
+    #    0.9,
+    #    "a",
+    #    fontsize=10,
+    #    weight="bold",
+    #    horizontalalignment="center",
+    #    transform=axs[0, 0].transAxes,
+    #)
     axs[1, 0].text(
         0.9,
         0.9,
@@ -217,4 +220,5 @@ def format_data_overview_plot(f, axs):
         arrowprops=dict(facecolor="black", shrink=0.05, width=1, headwidth=4),
         fontsize=10,
     )
-    plt.tight_layout(pad=0.8, w_pad=0, h_pad=0)
+    #plt.tight_layout(pad=0.8, w_pad=0, h_pad=0)
+    plt.tight_layout()
