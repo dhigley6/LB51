@@ -39,7 +39,7 @@ def summary():
             )
             if ind == 0:
                 handles, labels = axs[1, 1].get_legend_handles_labels()
-                f.legend(handles, labels, loc=(0.415, 0.6), frameon=True)
+                f.legend(handles, labels, loc=(0.415, 0.59), frameon=True)
 
     long_data = LB51_get_cal_data.get_long_pulse_data()
     short_data = LB51_get_cal_data.get_short_pulse_data()
@@ -60,17 +60,33 @@ def summary():
     spectra_series_plot(axs[1, 0], short_summary_data)
     spectra_series_plot(axs[1, 1], long_summary_data)
     sum_data359 = short_data["359"]["sum_intact"]
+    """
     ssrl_res_absorption = (
         sum_data359["ssrl_absorption"] - sum_data359["ssrl_absorption"][0]
     )
-    axs[0, 0].plot(sum_data359["phot"], ssrl_res_absorption, label="Absorption")
+    ssrl_absorption = sum_data359['ssrl_absorption']
+    #axs[0, 0].semilogy(sum_data359["phot"], ssrl_res_absorption, label="Absorption")
+    axs[0, 0].semilogy(sum_data359['phot'], ssrl_absorption, label='Absorption')
     axs[0, 1].plot(sum_data359["phot"], ssrl_res_absorption, label="Absorption")
     emission = get_emission()
-    axs[0, 0].plot(emission["x"] - 0.4, -1 * emission["y"] + 0.2, label="Emission")
-    axs[0, 1].plot(emission["x"] - 0.4, -1 * emission["y"] + 0.2, label="Emission")
+    axs[0, 0].semilogy(emission['x']-0.4, emission['y']*1E-8, label='Emission')
+    #axs[0, 0].semilogy(emission["x"] - 0.4, emission["y"]*1E-8 + 0.2, label="Emission")
+    axs[0, 1].plot(emission["x"] - 0.4, -1 * emission["y"]*1E-8 + 0.2, label="Emission")
+    """
+    sum_data359['ssrl_absorption'] = sum_data359['ssrl_absorption']/np.amax(sum_data359['ssrl_absorption'])
+    sum_data359['ssrl_absorption'] = sum_data359['ssrl_absorption']-np.amin(sum_data359['ssrl_absorption'])+(1/20)*np.amax(sum_data359['ssrl_absorption'])
+    #sum_data359['ssrl_absorption'] = sum_data359['ssrl_absorption']-sum_data359['ssrl_absorption'][0]+0.01
+    emission = get_emission()
+    linear_plot(axs[0, 0], sum_data359, emission)
+    linear_plot(axs[0, 1], sum_data359, emission)
     format_summary_plot(f, axs)
-    plt.savefig("plots/2020_11_26_summary.eps", dpi=600)
-    plt.savefig("plots/2020_11_26_summary.png", dpi=600)
+    #plt.savefig("plots/2020_11_26_summary.eps", dpi=600)
+    #plt.savefig("plots/2020_11_26_summary.png", dpi=600)
+
+def linear_plot(ax, absorption, emission):
+    ax.semilogy(absorption['phot'], absorption['ssrl_absorption'], label='Absorption')
+    y_emission = 0.8*1E-8*emission['y']/np.amax(emission['y'])
+    ax.semilogy(emission['x']-0.4, y_emission, label='Emission')
 
 
 def format_summary_plot(f, axs):
@@ -88,10 +104,10 @@ def format_summary_plot(f, axs):
     # plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     # plt.xlabel('Photon Energy (eV)')
     f.text(0.585, 0.02, "Photon Energy (eV)", ha="center")
-    axs[0, 0].set_ylabel("Intensity (a.u.)")
+    axs[0, 0].set_ylabel("Intensity Change (a.u.)")
     axs[1, 0].set_ylabel("Intensity (a.u.)")
     handles, labels = axs[0, 0].get_legend_handles_labels()
-    f.legend(handles, labels, loc=(0.42, 0.9), frameon=True)
+    f.legend(handles, labels, loc=(0.42, 0.8), frameon=True, title='Linear')
     texts = []
     texts.append(
         axs[1, 0].text(
@@ -235,13 +251,13 @@ def format_summary_plot(f, axs):
             ]
         )
     axs[0, 0].text(
-        0.1, 0.88, "a", transform=axs[0, 0].transAxes, fontsize=10, fontweight="bold"
+        0.1, 0.7, "a", transform=axs[0, 0].transAxes, fontsize=10, fontweight="bold"
     )
     axs[1, 0].text(
         0.1, 0.94, "c", transform=axs[1, 0].transAxes, fontsize=10, fontweight="bold"
     )
     axs[0, 1].text(
-        0.8, 0.88, "b", transform=axs[0, 1].transAxes, fontsize=10, fontweight="bold"
+        0.8, 0.7, "b", transform=axs[0, 1].transAxes, fontsize=10, fontweight="bold"
     )
     axs[1, 1].text(
         0.8, 0.94, "d", transform=axs[1, 1].transAxes, fontsize=10, fontweight="bold"
