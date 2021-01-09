@@ -80,8 +80,8 @@ def summary():
     linear_plot(axs[0, 0], sum_data359, emission)
     linear_plot(axs[0, 1], sum_data359, emission)
     format_summary_plot(f, axs)
-    #plt.savefig("plots/2020_11_26_summary.eps", dpi=600)
-    #plt.savefig("plots/2020_11_26_summary.png", dpi=600)
+    plt.savefig("plots/2021_01_08_summary.eps", dpi=600)
+    plt.savefig("plots/2021_01_08_summary.png", dpi=600)
 
 def linear_plot(ax, absorption, emission):
     ax.semilogy(absorption['phot'], absorption['ssrl_absorption'], label='Absorption')
@@ -104,7 +104,7 @@ def format_summary_plot(f, axs):
     # plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     # plt.xlabel('Photon Energy (eV)')
     f.text(0.585, 0.02, "Photon Energy (eV)", ha="center")
-    axs[0, 0].set_ylabel("Intensity Change (a.u.)")
+    axs[0, 0].set_ylabel("Intensity (a.u.)")
     axs[1, 0].set_ylabel("Intensity (a.u.)")
     handles, labels = axs[0, 0].get_legend_handles_labels()
     f.legend(handles, labels, loc=(0.42, 0.8), frameon=True, title='Linear')
