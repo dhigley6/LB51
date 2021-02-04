@@ -10,7 +10,8 @@ from LB51.manuscript_plots import set_plot_params
 
 set_plot_params.init_paper_small()
 
-EMISSION_SHIFT = 0.4    # photon energy shift from reference data
+EMISSION_SHIFT = 0.4  # photon energy shift from reference data
+
 
 def summary():
     long_data = LB51_get_cal_data.get_long_pulse_data()
@@ -31,57 +32,32 @@ def summary():
     )
     spectra_series_plot(axs[1, 0], short_summary_data)
     spectra_series_plot(axs[1, 1], long_summary_data)
-    #sum_data359 = short_data["359"]["sum_intact"]
-    #ssrl_absorption = sum_data359['ssrl_absorption']
-    #axs[0, 0].plot(sum_data359['phot'], (1-np.exp(-1*ssrl_absorption)), label='Absorption')
-    #axs[0, 1].plot(sum_data359["phot"], (1-np.exp(-1*ssrl_absorption)), label="Absorption")
-    #emission = get_emission()
-    #emission_y_to_plot = emission['y']
-    #axs[0, 0].plot([], [], label='Emission')
-    bonus_ax = axs[0, 0].twinx()
-    bonus_ax.plot(emission['x']-EMISSION_SHIFT, emission_y_to_plot, label='Emission', color='tab:orange')
-    bonus_ax.tick_params(labelright=False)
-    bonus_ax.spines['left'].set_color('tab:blue')
-
-    bonus_ax2 = axs[0, 1].twinx()
-    bonus_ax2.plot(emission['x']-EMISSION_SHIFT, emission_y_to_plot, label='Emission', color='tab:orange')
-    bonus_ax2.set_ylabel('I$_{emission}$/I$_0$ $\sim 10^{-8}$')
-    bonus_ax2.yaxis.label.set_color('tab:orange')
-    axs[0, 0].tick_params(axis='y', colors='tab:blue')
-    bonus_ax2.tick_params(axis='y', colors='tab:orange')
-    bonus_ax2.spines['right'].set_color('tab:orange')
-    axs[0, 0].yaxis.label.set_color('tab:blue')
-    axs[0, 0].yaxis.set_ticklabels([])
-    bonus_ax2.yaxis.set_ticklabels([])
-    axs[0, 0].yaxis.set_ticks([])
-    bonus_ax2.yaxis.set_ticks([])
-
-    format_summary_plot(f, axs)
+    emission_axs = linear_plots([axs[0, 0], axs[0, 1]], short_data["359"]["sum_intact"])
+    format_summary_plot(f, axs, emission_axs)
     plt.savefig("plots/2021_02_03_summary.eps", dpi=600)
     plt.savefig("plots/2021_02_03_summary.png", dpi=600)
 
+
 def linear_plots(ax_list, sum_data359):
     emission = get_emission()
-    ssrl_absorption = sum_data359['ssrl_absorption']
-    ssrl_absorbed = 1-np.exp(-1*ssrl_absorption)
+    ssrl_absorption = sum_data359["ssrl_absorption"]
+    ssrl_absorbed = 1 - np.exp(-1 * ssrl_absorption)
+    emission_axs = []
     for ind, ax in enumerate(ax_list):
-        ax.plot(sum_data359['phot'], ssrl_absorbed, label='Absorption')
+        ax.plot(sum_data359["phot"], ssrl_absorbed, label="Absorption")
+        ax.plot([], [], label="Emission", color="tab:orange")
         emission_ax = ax.twinx()
-        emission_ax.plot(emission['x']-EMISSION_SHIFT, emission['y'])
-        if ind == 0:
-            emission_ax.tick_params(labelright=False)
-            emission_ax.spines['left'].set_color('tab:blue')
-        if ind == 1:
-            
+        emission_ax.plot(
+            emission["x"] - EMISSION_SHIFT,
+            emission["y"],
+            label="Emission",
+            color="tab:orange",
+        )
+        emission_axs.append(emission_ax)
+    return emission_axs
 
 
-def linear_plot(ax, absorption, emission):
-    ax.semilogy(absorption['phot'], absorption['ssrl_absorption'], label='Absorption')
-    y_emission = 0.8*1E-8*emission['y']/np.amax(emission['y'])
-    ax.semilogy(emission['x']-0.4, y_emission, label='Emission')
-
-
-def format_summary_plot(f, axs):
+def format_summary_plot(f, axs, emission_axs):
     def place_vlines():
         ax_list = [axs[0, 0], axs[0, 1], axs[1, 0], axs[1, 1]]
         vline_loc_list = [774.5, 776.5, 778]
@@ -89,16 +65,22 @@ def format_summary_plot(f, axs):
             for vline_loc in vline_loc_list:
                 ax.axvline(vline_loc, linestyle="--", color="k")
 
+    emission_axs[0].tick_params(labelright=False)
+    emission_axs[0].spines["left"].set_color("tab:blue")
+    axs[0, 0].tick_params(axis="y", color="tab:blue")
+    axs[0, 0].yaxis.label.set_color("tab:blue")
+    axs[0, 0].yaxis.set_ticklabels([])
+    axs[0, 0].yaxis.set_ticks([])
+    emission_axs[1].set_ylabel("I$_{emission}$/I$_0$ $\sim 10^{-8}$")
+    emission_axs[1].yaxis.label.set_color("tab:orange")
+    emission_axs[1].tick_params(axis="y", colors="tab:orange")
+    emission_axs[1].yaxis.set_ticklabels([])
+    emission_axs[1].yaxis.set_ticks([])
     place_vlines()
     axs[1, 0].set_xlim((769, 787))
     axs[1, 0].set_ylim((-0.5, 4.75))
-    # f.add_subplot(111, frameon=False)
-    # plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    # plt.xlabel('Photon Energy (eV)')
     f.text(0.52, 0.02, "Photon Energy (eV)", ha="center")
-    #f.text(0.52, 0.02, "A", ha="center")
-    #axs[0, 0].set_ylabel("10x I$_{absorbed}$/I$_0$")
-    axs[0, 0].set_ylabel('I$_{absorbed}$/I$_0$ $\sim$ 0.3')
+    axs[0, 0].set_ylabel("I$_{absorbed}$/I$_0$ $\sim$ 0.3")
     axs[1, 0].set_ylabel("Intensity (a.u.)")
     handles, labels = axs[0, 0].get_legend_handles_labels()
     f.legend(handles, labels, loc=(0.37, 0.88), frameon=True)
