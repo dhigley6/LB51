@@ -45,6 +45,8 @@ def run_quant_ana():
         "long_fluences": np.array(long_results["fluences"]),
         "short_efficiencies": 100 * np.array(short_results["stim_efficiencies"]),
         "long_efficiencies": 100 * np.array(long_results["stim_efficiencies"]),
+        'short_absorption_losses': 100 * np.array(short_results['absorption_losses']),
+        'long_absorption_losses': 100 * np.array(long_results['absorption_losses']),
         "short_stds": 100 * np.array(short_results["stim_stds"]),
         "long_stds": 100 * np.array(long_results["stim_stds"]),
     }
@@ -89,6 +91,7 @@ def _get_data_set_results(run_sets_list, data_sets):
         "fluences": [],
         "stim_efficiencies": [],
         "stim_stds": [],
+        "absorption_losses": [],
     }
     for run_set in run_sets_list:
         fluence = data_sets[run_set]["sum_intact"]["fluence"]
@@ -96,9 +99,16 @@ def _get_data_set_results(run_sets_list, data_sets):
         stim_std = _calculate_bootstrap_std(data_sets[run_set])
         stim_offset = _calculate_stim_offset(run_set)
         stim_efficiency = stim_efficiency - stim_offset
+        absorption_loss = _get_absorption_loss(
+            np.sum(data_sets[run_set]["intact"]["no_sam_spec"], axis=0),
+            np.sum(data_sets[run_set]["intact"]["sam_spec"], axis=0),
+            data_sets[run_set]["sum_intact"]["ssrl_absorption"],
+            data_sets[run_set]["sum_intact"]["phot"],
+        )
         to_return["fluences"].append(fluence)
         to_return["stim_efficiencies"].append(stim_efficiency)
         to_return["stim_stds"].append(stim_std)
+        to_return['absorption_losses'].append(absorption_loss)
     return to_return
 
 
@@ -184,9 +194,36 @@ def _get_stim_efficiency(no_sam_spec, sam_spec, ssrl_absorption, phot):
     stim = exc_sam_spec
     # stim[stim < 0] = 0    # clip negative values to zero
     stim_sum = np.trapz(stim[stim_region])
-    res_absorbed_sum = np.sum(no_sam_spec) / 5
+    #res_absorbed_sum = np.sum(no_sam_spec) / 5
     stim_efficiency = stim_sum / res_absorbed_sum
     return stim_efficiency
+
+def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
+    """Return normalized absorption loss
+    """
+    exc_sam_spec = _get_exc_sam_spec(
+        no_sam_spec,
+        sam_spec,
+        ssrl_absorption,
+    )
+    res_absorbed_linear_sum = _get_res_absorbed_sum(no_sam_spec, phot)
+    absorbed_region = (phot > 777.25) & (phot < 782.5)
+    absorption_loss = np.trapz(exc_sam_spec[absorbed_region])
+    absorption_loss = absorption_loss/res_absorbed_linear_sum
+    return absorption_loss
+
+
+"""
+def _get_absorption_efficiency(no_sam_spec, sam_spec, ssrl_absorption, phot):
+    exc_sam_spec = _get_exc_sam_spec(
+        no_sam_spec,
+        sam_spec,
+        ssrl_absorption,
+    )
+    res_absorbed_linear_sum = _get_res_absorbed_sum(no_sam_spec, phot)
+    absorbed_region = (phot > 777.25) & (phot < 782.5)
+    absorbed_sum = np.trapz(exc_sam_spec[stim_region])
+"""
 
 
 def _get_res_absorbed_sum(no_sam_spec, phot):

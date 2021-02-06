@@ -129,6 +129,8 @@ def simulate_multipulse_series(
             Fluences of simulations (J/cm^2)
         'stim_efficiencies' key: List[float]
             Efficiency of stimulated inelastic scattering in %
+        'absorption_losses' key: List[float]
+            Absorption loss in %
         'phot': 1d np.ndarray
             Photon energies of saved spectra (eV)
         'summed_incident_fields': 2d np.ndarray (complex)
@@ -141,6 +143,7 @@ def simulate_multipulse_series(
     summed_incident_intensities_list = []
     summed_transmitted_intensities_list = []
     stim_efficiencies = []
+    absorption_losses = []
     for i, strength in enumerate(STRENGTHS):
         sim_results = Parallel(n_jobs=-1)(
             delayed(_run_single_pulse_sim)(times, E_in, strength, enhanced)
@@ -159,12 +162,17 @@ def simulate_multipulse_series(
         stim_efficiency = _get_stim_efficiency(
             phot, intensity_difference, linear_intensity_difference
         )
+        absorption_loss = _get_absorption_loss(
+            phot, intensity_difference, linear_intensity_difference
+        )
         summed_incident_intensities_list.append(summed_incident_intensities)
         summed_transmitted_intensities_list.append(summed_transmitted_intensities)
         stim_efficiencies.append(stim_efficiency)
+        absorption_losses.append(absorption_loss)
     summary_result = {
         "fluences": STRENGTHS,
         "stim_efficiencies": stim_efficiencies,
+        "absorption_losses": absorption_losses,
         "phot": sim_results[0]["phot"],
         "summed_incident_intensities": summed_incident_intensities_list,
         "summed_transmitted_intensities": summed_transmitted_intensities_list,
@@ -205,6 +213,32 @@ def _get_stim_efficiency(
     stim_strength = np.trapz(change_from_linear[stim_region])
     stim_efficiency = 100 * stim_strength / abs_strength
     return stim_efficiency
+
+def _get_absorption_loss(
+    phot: np.ndarray,
+    intensity_difference: np.ndarray,
+    linear_intensity_difference: np.ndarray,
+) -> float:
+    """Return absorption loss in percent
+
+    Parameters:
+    -----------
+    same as _get_stim_efficiency
+
+    Returns:
+    ________
+    absorption_loss: float
+        Absorption loss (%)
+    """
+    abs_region = (phot > ABS_LIMITS[0]) & (phot < ABS_LIMITS[1])
+    linear_abs_strength = -1 * np.trapz(linear_intensity_difference[abs_region])
+    change_from_linear = intensity_difference - linear_intensity_difference
+    change_from_linear[
+        change_from_linear < 0
+    ] = 0  # clip negative values to zero (shouldn't change result significantly for simulation)
+    abs_loss = np.trapz(change_from_linear[abs_region])
+    abs_loss = 100 * abs_loss / linear_abs_strength
+    return abs_loss
 
 
 def _get_summed_result(

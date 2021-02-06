@@ -42,13 +42,13 @@ def quant():
         linestyle="",
         marker="o",
     )
-    axs[0].loglog(
+    axs[0].plot(
         sim_results_5fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_5fs["stim_efficiencies"]),
         color="tab:blue",
         label="Three Level\nSimulation",
     )
-    axs[1].loglog(
+    axs[1].plot(
         sim_results_25fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_25fs["stim_efficiencies"]),
         color="tab:blue",
