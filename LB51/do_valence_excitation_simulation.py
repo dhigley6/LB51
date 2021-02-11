@@ -10,6 +10,8 @@ from scipy import constants
 
 from LB51 import LB51_get_cal_data
 
+EMISSION_SHIFT = 0.4
+
 SHORT_DATA = LB51_get_cal_data.get_short_pulse_data()
 PHOT = SHORT_DATA['99']['sum_intact']['phot']
 SSRL_ABSORPTION_COPD = SHORT_DATA["99"]["sum_intact"]["ssrl_absorption"]
@@ -82,3 +84,38 @@ def calculate_absorption_loss(electronic_temperature=7500, no_sam_spec=DEFAULT_N
     nonlinear_integral = np.sum(1-nonlinear_transmitted[in_range])
     print(nonlinear_integral/linear_integral)
     return nonlinear_integral/linear_integral
+
+def testing(electronic_temperature=7500, no_sam_spec=DEFAULT_NO_SAM_SPEC):
+    emission = get_emission()
+    emission['y'] = np.interp(PHOT, emission['x'], emission['y'], right=emission['y'][0])-0.2
+    emission['x'] = PHOT
+    change_absorption = calculate_absorption_changes(electronic_temperature)
+    change_absorption = np.interp(PHOT, np.linspace(-5+CORE_2_FERMI, 5+CORE_2_FERMI, 1000), change_absorption)
+    plt.figure() 
+    plt.plot(PHOT, SSRL_ABSORPTION_COPD)
+    nonlinear_absorption = SSRL_ABSORPTION_COPD-change_absorption
+    nonlinear_absorption = nonlinear_absorption-SSRL_RESONANT_ABSORPTION*0.1
+    nonlinear_absorption = nonlinear_absorption-emission['y']*0.4
+    plt.plot(PHOT, nonlinear_absorption)
+    plt.plot(PHOT, emission['y'])
+    linear_sam_spec = no_sam_spec*np.exp(-1*SSRL_ABSORPTION_COPD)
+    sam_spec = no_sam_spec*np.exp(-1*nonlinear_absorption)
+    nonlinear_spec = sam_spec-linear_sam_spec
+    f, axs = plt.subplots(1, 2, sharex=True, sharey=True)
+    axs[0].plot(PHOT, no_sam_spec)
+    axs[0].plot(PHOT, 5*nonlinear_spec)
+    axs[1].plot(PHOT, no_sam_spec)
+    axs[1].plot(PHOT, SHORT_DATA['99']['sum_intact']['exc_sam_spec']*5)
+    axs[0].set_xlim((770, 785))
+    place_vlines(axs[0])
+    place_vlines(axs[1])
+
+def get_emission():
+    data = np.genfromtxt("data/measuredEmissionPoints3.txt")
+    emission = {"x": data[:, 0]-EMISSION_SHIFT, "y": data[:, 1]}
+    return emission
+
+def place_vlines(ax):
+    vline_loc_list = [774.5, 776.5, 778]
+    for vline_loc in vline_loc_list:
+        ax.axvline(vline_loc, linestyle='--', color='k')
