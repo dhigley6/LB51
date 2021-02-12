@@ -31,25 +31,61 @@ GAMMA = 405
 # Boltzmann's constant (eV/K)
 BOLTZMANN = constants.value(u'Boltzmann constant in eV/K')
 
-def calculate_valence_energy(pulse_length=5.0, cascade_duration=13.0):
-    """Calculate energy of electrons within 2 eV of Fermi level from LK30 model
+
+def calculate_absorption_changes(incident_fluence=1E3, no_sample_spectrum=DEFAULT_NO_SAM_SPEC):
+    absorbed_fluence = calculate_total_absorbed_fluence(incident_fluence, no_sample_spectrum)
+    pulse_averaged_valence_fraction = calculate_pulse_averaged_valence_fraction()
+    pulse_averaged_valence_energy = absorbed_fluence*pulse_averaged_valence_fraction
+    electronic_temperature = calculate_electronic_temperature(pulse_averaged_valence_energy)
+    print(electronic_temperature)
+    change_absorption = calculate_absorption_changes_for_temperature(electronic_temperature)
+    return PHOT, change_absorption
+
+def calculate_total_absorbed_fluence(incident_fluence: float, no_sample_spectrum: np.ndarray) -> float:
+    """Calculate fluence absorbed in sample, assuming linear sample response
+    """
+    sample_transmission = np.exp(-1*SSRL_ABSORPTION_COPD)
+    transmitted_xrays = no_sample_spectrum*sample_transmission
+    absorbed_xrays = no_sample_spectrum-transmitted_xrays
+    absorbed_fraction = np.sum(absorbed_xrays)/np.sum(no_sample_spectrum)
+    absorbed_fluence = incident_fluence*absorbed_fraction
+    return absorbed_fluence
+
+def calculate_pulse_averaged_valence_fraction(pulse_length: float = 5.0, cascade_duration: float = 13.0) -> float:
+    """Calculate pulse-averaged fraction of deposited X-ray energy that
+    is stored as valence excitations within 2 eV of the Fermi level, using
+    LK30 model
+
+    Returns:
+    --------
+    averaged_response: float
+        (between 0 and 1)
     """
     time = np.arange(-1000, 2000, 0.1)
     pulse = (time > 0) & (time <= pulse_length)    # flat top pulse
     cascade_time = np.arange(-400, 400, 0.1)
-    cascade = (cascade_time > 0) & (cascade_time <= cascade_duration)
-    cascade = cascade/np.sum(cascade)
-    response = np.convolve(pulse, cascade, mode='same')
-    integrated_response = np.sum(response*pulse)/np.sum(pulse)
-    return integrated_response
+    cascade = cascade_time/cascade_duration
+    cascade[cascade_time < 0] = 0
+    cascade[cascade_time >= cascade_duration] = 1
+    response = np.convolve(pulse, cascade, mode='same')/np.sum(pulse)
+    averaged_response = np.sum(response*pulse)/np.sum(pulse)
+    plt.figure()
+    plt.plot(time, pulse, label='pulse')
+    plt.plot(cascade_time, cascade, label='cascade')
+    plt.plot(time, response, label='response')
+    plt.legend()
+    return averaged_response
 
-def convert_absorbed_fluence_to_energy_density(absorbed_fluence):
-    return absorbed_fluence*FLUENCE2ABSORBEDENERGY
+def calculate_electronic_temperature(averaged_valence_fluence: float) -> float:
+    """Calculate sample elctronic temperature for a given absorbed X-ray fluence
+    """
+    THICKNESS = 49.5E-9
+    FLUENCECONVERSION = 10    # mJ/cm^2 to J/m^2
+    T0 = 293     # room temperature in K
+    temperature = np.sqrt(2*FLUENCECONVERSION*averaged_valence_fluence/(THICKNESS*GAMMA)+T0)
+    return temperature
 
-def calculate_electronic_temperature(energy_per_atom):
-    pass
-
-def calculate_absorption_changes(electronic_temperature=10000):
+def calculate_absorption_changes_for_temperature(electronic_temperature=10000):
     energy = np.linspace(-5, 5, 1000)
     initial_occupations = energy < 0
     final_occupations = 1/(np.exp(energy/(BOLTZMANN*electronic_temperature))+1)
@@ -89,7 +125,7 @@ def testing(electronic_temperature=7500, no_sam_spec=DEFAULT_NO_SAM_SPEC):
     emission = get_emission()
     emission['y'] = np.interp(PHOT, emission['x'], emission['y'], right=emission['y'][0])-0.2
     emission['x'] = PHOT
-    change_absorption = calculate_absorption_changes(electronic_temperature)
+    change_absorption = calculate_absorption_changes_for_temperature(electronic_temperature)
     change_absorption = np.interp(PHOT, np.linspace(-5+CORE_2_FERMI, 5+CORE_2_FERMI, 1000), change_absorption)
     plt.figure() 
     plt.plot(PHOT, SSRL_ABSORPTION_COPD)
