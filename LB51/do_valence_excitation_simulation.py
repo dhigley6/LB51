@@ -94,6 +94,7 @@ def calculate_absorption_changes_for_temperature(electronic_temperature=10000):
     broadening = np.exp(-1*(energy)**2/(sigma**2))
     broadening = broadening/np.sum(broadening)
     change_absorption = np.convolve(change_occupations, broadening, mode='same')
+    change_absorption = np.interp(PHOT-CORE_2_FERMI, energy, change_absorption)
     plt.figure()
     plt.plot(change_absorption)
     return change_absorption
