@@ -6,7 +6,7 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 
-import LB51_get_cal_data
+from LB51 import LB51_get_cal_data
 
 MARKUS_FILES_START = "data/markus_data_"
 
