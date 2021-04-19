@@ -137,7 +137,8 @@ def get_good_runs_list():
             "good_no_sample_runs": [287],
         }
     )
-    # Need to fix starting here
+    # below run set is low fluence. Some outlier samples where alignment isn't good were
+    # taken out
     all_runs.append(
         {
             "all_runs": np.append(np.arange(290, 307), np.arange(312, 319)),
@@ -219,6 +220,8 @@ def get_good_runs_list():
             "good_no_sample_runs": [],
         }
     )
+    # Below run set has some problems with alignment that are possibly correctable,
+    # but aren't used in analysis for now, in case it's not
     test = np.append(np.arange(560, 566), np.arange(570, 575))
     orig = np.append(np.arange(558, 568), np.arange(570, 582))
     test = np.append(np.arange(554, 555), np.arange(558, 568))
@@ -251,6 +254,8 @@ def get_good_runs_list():
     )
     # Note: run 598: Co/Pd not lifted off of no sample part
     # Note: including run 597 here seems to mess this up for some reason. Need to look into this further
+    # But these runs aren't used in final analysis right now anyway, since they
+    # don't contain sufficient data to extract something meaningful
     good_596 = np.append(np.arange(596, 597), np.arange(599, 602))
     all_runs.append(
         {
@@ -260,12 +265,16 @@ def get_good_runs_list():
         }
     )
     good_sample_runs603 = np.append(np.arange(603, 607), np.arange(610, 614))
-    good_sample_runs603 = np.append(good_sample_runs603, [616])
+    good_sample_runs603 = np.append(good_sample_runs603, [616, 617])
     good_sample_runs603 = np.append(good_sample_runs603, np.arange(618, 639))
     good_sample_runs647 = np.append(np.arange(647, 666), np.arange(670, 671))
     good_sample_runs603_total = np.append(good_sample_runs603, good_sample_runs647)
-    # Note: 608 & 609 have basically zero sample spectra, so taken out from below dataset
+    # Note: 608 & 609 have basically zero sample spectra, 607 also very low,
+    # probably alignment issue or bad samples,
+    # so taken out from below dataset. 614&615 have same issue, 666-669 have same issue
+    # 616&617 look okay though
     test = np.append(np.arange(603, 608), np.arange(610, 639))
+    test = np.append(np.arange(603, 639), np.arange(647, 671))
     all_runs.append(
         {
             "all_runs": np.append(np.arange(603, 639), np.arange(647, 671)),
@@ -283,7 +292,9 @@ def get_good_runs_list():
             "good_no_sample_runs": [],
         }
     )
-    # Note: 669 has basically zero sample spectra, 668 has very low
+    # Note: 669 has basically zero sample spectra, 668, 666 and 667 also very low and
+    # adjacent, so taken out
+    test = np.arange(647, 671)
     all_runs.append(
         {
             "all_runs": np.arange(647, 671),
