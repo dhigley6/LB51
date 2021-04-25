@@ -18,13 +18,15 @@ def quant2():
     with open('LB51/xbloch/results/enhanced_25fs.pickle', 'rb') as f:
         sim_results_25fs_enhanced = pickle.load(f)
     f, axs = plt.subplots(1, 2)
-    axs[0].scatter(
+    axs[0].errorbar(
         measured['short_fluences'],
-        measured['short_absorption_losses']
+        measured['short_absorption_losses'],
+        yerr=measured['short_absorption_stds'],
     )
-    axs[1].scatter(
+    axs[1].errorbar(
         measured['long_fluences'],
-        measured['long_absorption_losses']
+        measured['long_absorption_losses'],
+        yerr=measured['long_absorption_stds'],
     )
     axs[0].plot(
         sim_results_5fs['fluences'] * 1e3,

@@ -49,6 +49,8 @@ def run_quant_ana():
         'long_absorption_losses': 100 * np.array(long_results['absorption_losses']),
         "short_stds": 100 * np.array(short_results["stim_stds"]),
         "long_stds": 100 * np.array(long_results["stim_stds"]),
+        'short_absorption_stds': 100 * np.array(short_results['absorption_loss_stds']),
+        'long_absorption_stds': 100 * np.array(long_results['absorption_loss_stds']),
     }
     with open(MEASURED_STIM_FILE, "wb") as f:
         pickle.dump(quant_data, f)
@@ -236,7 +238,7 @@ def _get_res_absorbed_sum(no_sam_spec, phot):
     ssrl_res_trans = _get_ssrl_res_trans()
     res_transmitted = no_sam_spec * ssrl_res_trans
     res_absorbed = no_sam_spec - res_transmitted
-    abs_region = (phot > 774) & (phot < 780)
+    abs_region = (phot > 776.5) & (phot < 780)
     res_absorbed_sum = np.trapz(res_absorbed[abs_region])
     return res_absorbed_sum
 
