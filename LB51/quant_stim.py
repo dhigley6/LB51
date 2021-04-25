@@ -92,6 +92,7 @@ def _get_data_set_results(run_sets_list, data_sets):
         "stim_efficiencies": [],
         "stim_stds": [],
         "absorption_losses": [],
+        "absorption_loss_stds": [],
     }
     for run_set in run_sets_list:
         fluence = data_sets[run_set]["sum_intact"]["fluence"]
@@ -105,10 +106,17 @@ def _get_data_set_results(run_sets_list, data_sets):
             data_sets[run_set]["sum_intact"]["ssrl_absorption"],
             data_sets[run_set]["sum_intact"]["phot"],
         )
+        absorption_loss_std = _get_absorption_loss_std_error(
+            data_sets[run_set]['intact']['no_sam_spec'],
+            data_sets[run_set]['intact']['sam_spec'],
+            data_sets[run_set]['sum_intact']['ssrl_absorption'],
+            data_sets[run_set]['sum_intact']['phot'],
+        )
         to_return["fluences"].append(fluence)
         to_return["stim_efficiencies"].append(stim_efficiency)
         to_return["stim_stds"].append(stim_std)
         to_return['absorption_losses'].append(absorption_loss)
+        to_return['absorption_loss_stds'].append(absorption_loss_std)
     return to_return
 
 
@@ -211,6 +219,18 @@ def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
     absorption_loss = np.trapz(exc_sam_spec[absorbed_region])
     absorption_loss = absorption_loss/res_absorbed_linear_sum
     return absorption_loss
+
+def _get_absorption_loss_std_error(no_sam_specs, sam_specs, ssrl_absorption, phot):
+    """Get standard error of absorption loss using bootstrap
+    """
+    bootstrapped_values = []
+    for i in range(BOOTSTRAPS):
+        bootstrap_inds = np.random.choice(np.arange(len(no_sam_specs)), size=len(no_sam_specs))
+        no_sam_spec_sum = np.sum(no_sam_specs[bootstrap_inds], axis=0)
+        sam_spec_sum = np.sum(sam_specs, axis=0)
+        bootstrapped_values.append(_get_absorption_loss(no_sam_spec_sum, sam_spec_sum, ssrl_absorption, phot))
+    return np.std(bootstrapped_values)
+
 
 def _get_res_absorbed_sum(no_sam_spec, phot):
     ssrl_res_trans = _get_ssrl_res_trans()
