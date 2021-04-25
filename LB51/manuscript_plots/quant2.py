@@ -13,6 +13,10 @@ def quant2():
     measured = get_measurements()
     sim_results_5fs = do_xbloch_sim.load_multipulse_data(5.0)
     sim_results_25fs = do_xbloch_sim.load_multipulse_data(25.0)
+    with open('LB51/xbloch/results/enhanced_5fs.pickle', 'rb') as f:
+        sim_results_5fs_enhanced = pickle.load(f)
+    with open('LB51/xbloch/results/enhanced_25fs.pickle', 'rb') as f:
+        sim_results_25fs_enhanced = pickle.load(f)
     f, axs = plt.subplots(1, 2)
     axs[0].scatter(
         measured['short_fluences'],
@@ -26,9 +30,17 @@ def quant2():
         sim_results_5fs['fluences'] * 1e3,
         np.array(sim_results_5fs['absorption_losses']),
     )
+    axs[0].plot(
+        sim_results_5fs_enhanced['fluences'] * 1e3,
+        np.array(sim_results_5fs_enhanced['absorption_losses']),
+    )
     axs[1].plot(
         sim_results_25fs['fluences'] * 1e3,
         np.array(sim_results_25fs['absorption_losses'])
+    )
+    axs[1].plot(
+        sim_results_25fs_enhanced['fluences'] * 1e3,
+        np.array(sim_results_25fs_enhanced['absorption_losses']),
     )
     _format(axs)
 

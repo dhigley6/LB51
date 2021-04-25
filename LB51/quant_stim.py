@@ -212,20 +212,6 @@ def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
     absorption_loss = absorption_loss/res_absorbed_linear_sum
     return absorption_loss
 
-
-"""
-def _get_absorption_efficiency(no_sam_spec, sam_spec, ssrl_absorption, phot):
-    exc_sam_spec = _get_exc_sam_spec(
-        no_sam_spec,
-        sam_spec,
-        ssrl_absorption,
-    )
-    res_absorbed_linear_sum = _get_res_absorbed_sum(no_sam_spec, phot)
-    absorbed_region = (phot > 777.25) & (phot < 782.5)
-    absorbed_sum = np.trapz(exc_sam_spec[stim_region])
-"""
-
-
 def _get_res_absorbed_sum(no_sam_spec, phot):
     ssrl_res_trans = _get_ssrl_res_trans()
     res_transmitted = no_sam_spec * ssrl_res_trans
@@ -254,18 +240,3 @@ def experiment(run_set=LONG_DATA["603"]):
     plt.hist(result_blown, bins=100, alpha=0.5, label="blown")
     plt.legend()
     print(percentileofscore(result_intact, 0))
-
-    """
-    print(_get_stim_efficiency(
-        run_set['sum_blown']['no_sam_spec'],
-        run_set['sum_blown']['sam_spec'],
-        run_set['sum_blown']['ssrl_absorption'],
-        run_set['sum_blown']['phot']
-    ))
-    print(_get_stim_efficiency(
-        run_set['sum_intact']['no_sam_spec'],
-        run_set['sum_intact']['sam_spec'],
-        run_set['sum_intact']['ssrl_absorption'],
-        run_set['sum_intact']['phot']
-    ))
-    """
