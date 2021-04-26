@@ -1,4 +1,6 @@
 """Plot of stim efficiency vs X-ray intensity
+
+Old quantiative plot code (kept for reference)
 """
 
 import numpy as np
