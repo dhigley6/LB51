@@ -29,6 +29,8 @@ def quant2():
     _short_absorption_plot(axs[1, 0], measured, sim_results_5fs, sim_results_5fs_enhanced)
     _long_absorption_plot(axs[1, 1], measured, sim_results_25fs, sim_results_25fs_enhanced)
     _format(f, axs)
+    plt.savefig("plots/2021_04_25_quant.eps", dpi=600)
+    plt.savefig("plots/2021_04_25_quant.png", dpi=600)
 
 def _short_stim_plot(ax, measured, sim_results_5fs, sim_results_5fs_enhanced):
     ax.errorbar(

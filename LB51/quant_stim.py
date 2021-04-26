@@ -208,6 +208,7 @@ def _get_stim_efficiency(no_sam_spec, sam_spec, ssrl_absorption, phot):
     stim_efficiency = stim_sum / res_absorbed_sum
     return stim_efficiency
 
+# old absorption loss calculation
 #def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
 #    """Return normalized absorption loss
 #    """
