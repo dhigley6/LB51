@@ -208,19 +208,28 @@ def _get_stim_efficiency(no_sam_spec, sam_spec, ssrl_absorption, phot):
     stim_efficiency = stim_sum / res_absorbed_sum
     return stim_efficiency
 
+#def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
+#    """Return normalized absorption loss
+#    """
+#    exc_sam_spec = _get_exc_sam_spec(
+#        no_sam_spec,
+#        sam_spec,
+#        ssrl_absorption,
+#    )
+#    res_absorbed_linear_sum = _get_res_absorbed_sum(no_sam_spec, phot)
+#    absorbed_region = (phot > 777.25) & (phot < 782.5)
+#    absorption_loss = np.trapz(exc_sam_spec[absorbed_region])
+#    absorption_loss = absorption_loss/res_absorbed_linear_sum
+#    return absorption_loss
+
 def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
-    """Return normalized absorption loss
-    """
-    exc_sam_spec = _get_exc_sam_spec(
-        no_sam_spec,
-        sam_spec,
-        ssrl_absorption,
-    )
-    res_absorbed_linear_sum = _get_res_absorbed_sum(no_sam_spec, phot)
-    absorbed_region = (phot > 777.25) & (phot < 782.5)
-    absorption_loss = np.trapz(exc_sam_spec[absorbed_region])
-    absorption_loss = absorption_loss/res_absorbed_linear_sum
-    return absorption_loss
+    absorption = -1.0*np.log(sam_spec.astype(float)/no_sam_spec.astype(float))
+    absorption_change = absorption-ssrl_absorption
+    absorbed_region = (phot > 777.25) & (phot < 779)
+    absorption_original = np.trapz(ssrl_absorption[absorbed_region])
+    absorption_loss = np.trapz(absorption_change[absorbed_region])
+    absorption_loss = absorption_loss/absorption_original
+    return -1*absorption_loss
 
 def _get_absorption_loss_std_error(no_sam_specs, sam_specs, ssrl_absorption, phot):
     """Get standard error of absorption loss using bootstrap
