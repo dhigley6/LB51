@@ -227,7 +227,7 @@ def _get_absorption_loss(no_sam_spec, sam_spec, ssrl_absorption, phot):
     absorption = -1.0*np.log(sam_spec.astype(float)/no_sam_spec.astype(float))
     absorption_change = absorption-ssrl_absorption
     absorbed_region = (phot > 777.25) & (phot < 779)
-    absorption_original = np.trapz(ssrl_absorption[absorbed_region])
+    absorption_original = np.trapz(ssrl_absorption[absorbed_region]-ssrl_absorption[0])
     absorption_loss = np.trapz(absorption_change[absorbed_region])
     absorption_loss = absorption_loss/absorption_original
     return -1*absorption_loss

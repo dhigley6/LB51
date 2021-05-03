@@ -132,7 +132,7 @@ def _format(f, axs):
     axs[0, 0].set_xlim((-100, 1600))
     axs[0, 0].set_ylim((-0.1, 0.65))
     axs[0, 1].set_xlim((-300, 10000))
-    axs[1, 0].set_ylim((-5, 65))
+    axs[1, 0].set_ylim((-5, 100))
     # axs[1].set_ylabel("Inelastic Stim.\nScattering Efficiency (%)")
     axs[1, 0].legend(loc="upper left", frameon=False)
     axs[0, 0].text(
