@@ -34,8 +34,8 @@ def summary():
     spectra_series_plot(axs[1, 1], long_summary_data)
     emission_axs = linear_plots([axs[0, 0], axs[0, 1]], short_data["359"]["sum_intact"])
     format_summary_plot(f, axs, emission_axs)
-    plt.savefig("plots/2021_02_03_summary.eps", dpi=600)
-    plt.savefig("plots/2021_02_03_summary.png", dpi=600)
+    plt.savefig("plots/2021_06_13_summary.eps", dpi=600)
+    plt.savefig("plots/2021_06_13_summary.png", dpi=600)
 
 
 def linear_plots(ax_list, sum_data359):
@@ -71,6 +71,8 @@ def format_summary_plot(f, axs, emission_axs):
     axs[0, 0].yaxis.label.set_color("tab:blue")
     axs[0, 0].yaxis.set_ticklabels([])
     axs[0, 0].yaxis.set_ticks([])
+    axs[1, 0].yaxis.set_ticks([])
+    axs[1, 0].xaxis.set_ticks([770, 775, 780, 785])
     emission_axs[1].set_ylabel("I$_{emission}$/I$_0$ $\sim 10^{-8}$")
     emission_axs[1].yaxis.label.set_color("tab:orange")
     emission_axs[1].tick_params(axis="y", colors="tab:orange")
@@ -81,7 +83,7 @@ def format_summary_plot(f, axs, emission_axs):
     axs[1, 0].set_ylim((-0.5, 4.75))
     f.text(0.52, 0.02, "Photon Energy (eV)", ha="center")
     axs[0, 0].set_ylabel("I$_{absorbed}$/I$_0$ $\sim$ 0.3")
-    axs[1, 0].set_ylabel("Intensity (a.u.)")
+    axs[1, 0].set_ylabel("Intensity")
     handles, labels = axs[0, 0].get_legend_handles_labels()
     f.legend(handles, labels, loc=(0.37, 0.88), frameon=True)
     texts = []
@@ -89,7 +91,8 @@ def format_summary_plot(f, axs, emission_axs):
         axs[1, 0].text(
             769.5,
             3.2,
-            "779 eV,\n1080\nmJ/cm$^2$",
+            '1080\nmJ/cm$^2$',
+            #"779 eV,\n1080\nmJ/cm$^2$",
             transform=axs[1, 0].transData,
             fontsize=8,
         )
@@ -98,7 +101,8 @@ def format_summary_plot(f, axs, emission_axs):
         axs[1, 0].text(
             780.5,
             1.8,
-            "777 eV,\n1600\nmJ/cm$^2$",
+            '1600\nmJ/cm$^2$',
+            #"777 eV,\n1600\nmJ/cm$^2$",
             transform=axs[1, 0].transData,
             fontsize=8,
         )
@@ -107,7 +111,8 @@ def format_summary_plot(f, axs, emission_axs):
         axs[1, 0].text(
             769.5,
             0.25,
-            "779 eV,\n12\nmJ/cm$^2$",
+            '12\nmJ/cm$^2$',
+            #"779 eV,\n12\nmJ/cm$^2$",
             transform=axs[1, 0].transData,
             fontsize=8,
         )
@@ -116,7 +121,8 @@ def format_summary_plot(f, axs, emission_axs):
         axs[1, 1].text(
             769.5,
             3.2,
-            "780 eV,\n9490\nmJ/cm$^2$",
+            '9490\nmJ/cm$^2$',
+            #"780 eV,\n9490\nmJ/cm$^2$",
             transform=axs[1, 1].transData,
             fontsize=8,
         )
@@ -125,7 +131,8 @@ def format_summary_plot(f, axs, emission_axs):
         axs[1, 1].text(
             780.5,
             1.8,
-            "777 eV,\n8950\nmJ/cm$^2$",
+            '8950\nmJ/cm$^2$',
+            #"777 eV,\n8950\nmJ/cm$^2$",
             transform=axs[1, 1].transData,
             fontsize=8,
         )
@@ -134,7 +141,8 @@ def format_summary_plot(f, axs, emission_axs):
         axs[1, 1].text(
             769.5,
             0.25,
-            "781 eV,\n30\nmJ/cm$^2$",
+            '30\nmJ/cm$^2$',
+            #"781 eV,\n30\nmJ/cm$^2$",
             transform=axs[1, 1].transData,
             fontsize=8,
         )
