@@ -23,7 +23,7 @@ def overview_plot():
             norm_sam_spec = sam_spec / np.amax(sam_spec) / 4
             norm_no_sam_spec = no_sam_spec * NO_SAM / np.amax(sam_spec) / 4
             if ind == 0:
-                sam_label = "Sam."
+                sam_label = "Co/Pd"
                 no_sam_label = "Ref."
             else:
                 sam_label = "_nolegend_"
@@ -42,8 +42,8 @@ def overview_plot():
         ssrl_trans = np.exp(-1 * data["sum_intact"]["ssrl_absorption"])
         lin_sam_spec = no_sam_spec * ssrl_trans
         ax.plot(phot, no_sam_spec * NO_SAM, "k--", label="Ref.")
-        ax.plot(phot, sam_spec, "k", label="Sam.")
-        ax.plot(phot, lin_sam_spec, "k:", label="Linear Sam.")
+        ax.plot(phot, sam_spec, "k", label="Co/Pd")
+        ax.plot(phot, lin_sam_spec, "k:", label="Linear Co/Pd")
         ax.fill_between(
             phot,
             lin_sam_spec,
@@ -116,8 +116,8 @@ def overview_plot():
     nonlinear_spectra_plot(axs[0, 1], short_data["99"])
     xas_plot(axs[1, 1], short_data["359"], short_data["99"])
     format_data_overview_plot(f, axs)
-    plt.savefig("plots/2020_10_06_overview.eps", dpi=600)
-    plt.savefig("plots/2020_10_06_overview.png", dpi=600)
+    plt.savefig("plots/2021_06_20_overview.eps", dpi=600)
+    plt.savefig("plots/2021_06_20_overview.png", dpi=600)
 
 
 def format_data_overview_plot(f, axs):
