@@ -26,8 +26,8 @@ def overview_plot():
             norm_sam_spec = sam_spec / np.amax(sam_spec) / 1.5
             norm_no_sam_spec = no_sam_spec * NO_SAM / np.amax(sam_spec) / 1.5
             if ind == 0:
-                sam_label = "Top"
-                no_sam_label = "Bot."
+                sam_label = "Co/Pd Path"
+                no_sam_label = "Blank SiN Path"
             else:
                 sam_label = "_nolegend_"
                 no_sam_label = "_nolegend_"
@@ -113,20 +113,36 @@ def overview_plot():
 
     short_data = LB51_get_cal_data.get_short_pulse_data()
     long_data = LB51_get_cal_data.get_long_pulse_data()
-    f, axs = plt.subplots(2, 2, figsize=(3.37, 4))
+    plt.figure(figsize=(3.3, 2.5))
+    f = plt.gcf()
+    ax = plt.gca()
     shots_to_plot = [
         20,
         23,
         26,
     ]  # last shots on some samples (blown up) after the first few
-    individual_shots_plot(axs[0, 0], long_data["603"], shots_to_plot)
-    summed_spectra_plot(axs[1, 0], short_data["99"])
-    nonlinear_spectra_plot(axs[0, 1], short_data["99"])
-    xas_plot(axs[1, 1], short_data["359"], short_data["99"])
-    format_data_overview_plot(f, axs)
-    plt.savefig("plots/2021_01_04_overview_for_setup.eps", dpi=600)
-    plt.savefig("plots/2021_01_04_overview_for_setup.png", dpi=600)
+    individual_shots_plot(ax, long_data["603"], shots_to_plot)
+    new_format_plot(f, ax)
 
+    #summed_spectra_plot(axs[1, 0], short_data["99"])
+    #nonlinear_spectra_plot(axs[0, 1], short_data["99"])
+    #xas_plot(axs[1, 1], short_data["359"], short_data["99"])
+    #format_data_overview_plot(f, axs)
+    #plt.savefig("plots/2021_01_04_overview_for_setup.eps", dpi=600)
+    #plt.savefig("plots/2021_01_04_overview_for_setup.png", dpi=600)
+    plt.savefig('plots/2021_09_25_overview_for_setup.eps', dpi=600)
+    plt.savefig('plots/2021_09_25_overview_for_setup.png', dpi=600)
+
+def new_format_plot(f, ax):
+    ax.set_xlim((770, 785))
+    ax.set_xticks((770, 775, 780, 785))
+    ax.set_xlabel('Photon Energy (eV)')
+    ax.set_yticks([])
+    ax.set_ylabel("Intensity")
+    ax.legend(loc="lower left", frameon=False, ncol=2)
+    ax.set_ylim((-0.5, 3))
+    plt.title('Spectra Recorded with Samples Removed')
+    plt.tight_layout()
 
 def format_data_overview_plot(f, axs):
     axs[0, 0].set_xlim((770, 788))

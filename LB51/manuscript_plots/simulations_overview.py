@@ -12,7 +12,7 @@ set_plot_params.init_paper_small()
 
 def simulations_overview():
     sim_results = do_xbloch_sim.load_multipulse_data(5.0)  # SASE pulses case
-    f, axs = plt.subplots(2, 1, sharex=True, figsize=(3.37, 3.5))
+    f, axs = plt.subplots(2, 1, sharex=True, figsize=(3.3, 3.5))
     to_plot = sim_results["summed_incident_intensities"][0]
     to_plot = to_plot / np.amax(to_plot)
     axs[0].plot(sim_results["phot"], to_plot)
