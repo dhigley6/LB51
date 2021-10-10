@@ -32,8 +32,8 @@ def quant2():
     _short_absorption_plot(axs[1, 0], measured, sim_results_5fs, sim_results_5fs_enhanced)
     _long_absorption_plot(axs[1, 1], measured, sim_results_25fs, sim_results_25fs_enhanced)
     _format(f, axs)
-    plt.savefig("plots/2021_05_08_quant.eps", dpi=600)
-    plt.savefig("plots/2021_05_08_quant.png", dpi=600)
+    plt.savefig("plots/2021_10_03_quant.eps", dpi=600)
+    plt.savefig("plots/2021_10_03_quant.png", dpi=600)
 
 def _short_stim_plot(ax, measured, sim_results_5fs, sim_results_5fs_enhanced, f):
     l1 = ax.errorbar(
@@ -131,7 +131,7 @@ def _format(f, axs):
     axs[1, 0].set_ylabel('Absorption Loss (%)')
     #axs[0].set_xlabel('Fluence (mJ/cm$^2$)')
     #axs[0].set_ylabel('Absorption Loss (Percent)')
-    f.text(0.52, 0.02, "Fluence (mJ/cm$^2)", ha="center")
+    f.text(0.52, 0.02, "Fluence (mJ/cm$^2$)", ha="center")
     plt.tight_layout(w_pad=0, h_pad=0.1, rect=(0, 0.03, 0.98, 0.93))
     axs[0, 0].set_xlim((-100, 1600))
     axs[0, 0].set_ylim((-0.1, 0.65))
