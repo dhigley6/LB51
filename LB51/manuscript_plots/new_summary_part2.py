@@ -19,6 +19,8 @@ def make_figure():
     binned_99 = LB51_get_cal_data.bin_burst_data(short_data["99"]["total"], 99)
     short_summary_data = [short_data["359"]]
     short_summary_data.extend(binned_99)
+    # The below line changes the order to be in order of ascending fluence
+    short_summary_data = [short_summary_data[0], short_summary_data[2], short_summary_data[1]]
     long_summary_data = [long_data["641"]]
     long_summary_data.extend(binned_603)
     f, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(4, 4))
@@ -67,9 +69,9 @@ def format_figure(f, axs):
     texts = []
     texts.append(
         axs[0].text(
-            769.5,
-            3.2,
-            '1080\nmJ/cm$^2$',
+            780.5,      #769.5
+            3.3,        # 3.2
+            '1600\nmJ/cm$^2$',
             #"779 eV,\n1080\nmJ/cm$^2$",
             transform=axs[0].transData,
             fontsize=8,
@@ -77,9 +79,9 @@ def format_figure(f, axs):
     )
     texts.append(
         axs[0].text(
-            780.5,
-            1.8,
-            '1600\nmJ/cm$^2$',
+            769.5,
+            1.7,
+            '1080\nmJ/cm$^2$',
             #"777 eV,\n1600\nmJ/cm$^2$",
             transform=axs[0].transData,
             fontsize=8,
