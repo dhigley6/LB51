@@ -52,5 +52,5 @@ def simulations_overview():
         transform=axs[1].transAxes,
     )
     plt.tight_layout()
-    plt.savefig("plots/2020_09_09_sim_overview.eps", dpi=600)
-    plt.savefig("plots/2020_09_09_sim_overview.png", dpi=600)
+    plt.savefig("manuscript_plots/2020_09_09_sim_overview.eps", dpi=600)
+    plt.savefig("manuscript_plots/2020_09_09_sim_overview.png", dpi=600)

@@ -27,8 +27,8 @@ def make_figure():
     spectra_series_plot(axs[0], short_summary_data)
     spectra_series_plot(axs[1], long_summary_data)
     format_figure(f, axs)
-    plt.savefig("plots/2021_10_11_supplement_raw_specs.eps", dpi=600)
-    plt.savefig("plots/2021_10_11_supplement_raw_specs.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.eps", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.png", dpi=600)
 
 def spectra_series_plot(ax, data_list):
     for ind, data in enumerate(data_list):

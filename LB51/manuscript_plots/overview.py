@@ -116,8 +116,8 @@ def overview_plot():
     nonlinear_spectra_plot(axs[0, 1], short_data["99"])
     xas_plot(axs[1, 1], short_data["359"], short_data["99"])
     format_data_overview_plot(f, axs)
-    plt.savefig("plots/2021_06_20_overview.eps", dpi=600)
-    plt.savefig("plots/2021_06_20_overview.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_06_20_overview.eps", dpi=600)
+    plt.savefig("manuscript_plots/2021_06_20_overview.png", dpi=600)
 
 
 def format_data_overview_plot(f, axs):

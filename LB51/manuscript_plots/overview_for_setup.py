@@ -128,10 +128,8 @@ def overview_plot():
     #nonlinear_spectra_plot(axs[0, 1], short_data["99"])
     #xas_plot(axs[1, 1], short_data["359"], short_data["99"])
     #format_data_overview_plot(f, axs)
-    #plt.savefig("plots/2021_01_04_overview_for_setup.eps", dpi=600)
-    #plt.savefig("plots/2021_01_04_overview_for_setup.png", dpi=600)
-    plt.savefig('plots/2021_09_25_overview_for_setup.eps', dpi=600)
-    plt.savefig('plots/2021_09_25_overview_for_setup.png', dpi=600)
+    plt.savefig('manuscript_plots/2021_09_25_overview_for_setup.eps', dpi=600)
+    plt.savefig('manuscript_plots/2021_09_25_overview_for_setup.png', dpi=600)
 
 def new_format_plot(f, ax):
     ax.set_xlim((770, 785))

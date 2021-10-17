@@ -50,8 +50,8 @@ def simulations_with_enhancement():
         transform=axs[1].transAxes,
     )
     plt.tight_layout()
-    #plt.savefig("plots/2020_09_18_enhancement_sim_overview.eps", dpi=600)
-    #plt.savefig("plots/2020_09_18_enhancement_sim_overview.png", dpi=600)
+    plt.savefig("manuscript_plots/2020_09_18_enhancement_sim_overview.eps", dpi=600)
+    plt.savefig("manuscript_plots/2020_09_18_enhancement_sim_overview.png", dpi=600)
 
 def _load_data():
     with open(RESULTS_FILE, 'rb') as f:

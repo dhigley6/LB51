@@ -84,8 +84,8 @@ def format_figure(f, axs, emission_ax):
         fontsize=8,
     )
     plt.tight_layout()
-    plt.savefig("plots/2021_10_03_summary_p1.eps", dpi=600)
-    plt.savefig("plots/2021_10_03_summary_p1.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_03_summary_p1.eps", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_03_summary_p1.png", dpi=600)
 
 
 def summed_spectra_plot(ax, data):

@@ -34,7 +34,7 @@ def make_linear_plot():
     ax.plot(sum_data359['phot'], sum_data359['ssrl_absorption']-0.6, label='Absorption', color='k')
     format_cartoon()
     ax.set_ylabel('Absorption')
-    plt.savefig('plots/cartoon_linear.eps', dpi=600)
+    plt.savefig('manuscript_plots/cartoon_linear.eps', dpi=600)
 
 def make_temp_change_plot():
     short_data = LB51_get_cal_data.get_short_pulse_data()
@@ -44,7 +44,7 @@ def make_temp_change_plot():
     abs_change = fermi_dirac_change(sum_data359['phot'], FERMI_ENERGY, 7000)
     plt.plot(sum_data359['phot'], sum_data359['ssrl_absorption']+abs_change-0.6, color='k', label='Current State Absorption')
     format_cartoon()
-    plt.savefig('plots/cartoon_temp_change.eps', dpi=600)
+    plt.savefig('manuscript_plots/cartoon_temp_change.eps', dpi=600)
 
 
 def make_core_excited_plot():
@@ -58,7 +58,7 @@ def make_core_excited_plot():
     format_cartoon()
     plt.gca().set_xlabel('Photon Energy')
     plt.legend(loc='upper left', frameon=False)
-    plt.savefig('plots/cartoon_core_excited.eps', dpi=600)
+    plt.savefig('manuscript_plots/cartoon_core_excited.eps', dpi=600)
 
 
 def format_cartoon():
