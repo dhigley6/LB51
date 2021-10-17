@@ -15,6 +15,7 @@ scheduler.json
 *~
 .gitignore_*
 info/*
-data/*
 *.ai
 *.svg
+*.npy
+*.npz
