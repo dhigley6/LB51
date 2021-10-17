@@ -17,5 +17,3 @@ scheduler.json
 info/*
 *.ai
 *.svg
-*.npy
-*.npz
