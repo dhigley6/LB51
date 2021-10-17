@@ -15,37 +15,38 @@ EMISSION_SHIFT = 0.4  # photon energy shift from reference data
 NO_SAM = 1  # Factor to multiply no sample spectra by when plotting
 
 
-
 def make_figure():
     long_data = LB51_get_cal_data.get_long_pulse_data()
     short_data = LB51_get_cal_data.get_short_pulse_data()
     binned_603 = LB51_get_cal_data.bin_burst_data(long_data["603"]["total"], 603)
     binned_99 = LB51_get_cal_data.bin_burst_data(short_data["99"]["total"], 99)
     f, axs = plt.subplots(2, 1, figsize=(3, 4), sharex=True)
-    emission_ax = linear_plot(axs[0], short_data['359']['sum_intact'])
+    emission_ax = linear_plot(axs[0], short_data["359"]["sum_intact"])
     summed_spectra_plot(axs[1], binned_99[0])
     format_figure(f, axs, emission_ax)
-    
+
 
 def linear_plot(ax, sum_data359):
     emission = get_emission()
     ssrl_absorption = sum_data359["ssrl_absorption"]
     ssrl_absorbed = 1 - np.exp(-1 * ssrl_absorption)
-    ax.plot(sum_data359['phot'], ssrl_absorbed, label='Absorption')
-    ax.plot([], [], label='Emission', color='tab:orange')
+    ax.plot(sum_data359["phot"], ssrl_absorbed, label="Absorption")
+    ax.plot([], [], label="Emission", color="tab:orange")
     emission_ax = ax.twinx()
     emission_ax.plot(
-        emission['x'] - EMISSION_SHIFT,
-        emission['y'],
-        label='Emission',
-        color='tab:orange',
+        emission["x"] - EMISSION_SHIFT,
+        emission["y"],
+        label="Emission",
+        color="tab:orange",
     )
     return emission_ax
+
 
 def get_emission():
     data = np.genfromtxt("data/measuredEmissionPoints3.txt")
     emission = {"x": data[:, 0], "y": data[:, 1]}
     return emission
+
 
 def format_figure(f, axs, emission_ax):
     place_vlines([axs[0]])
@@ -56,11 +57,11 @@ def format_figure(f, axs, emission_ax):
     emission_ax.yaxis.set_ticks([])
     axs[0].xaxis.set_ticks([770, 775, 780, 785])
     axs[0].set_xlim((769, 787))
-    axs[1].set_xlabel('Photon Energy (eV)')
+    axs[1].set_xlabel("Photon Energy (eV)")
     axs[0].set_ylabel("I$_{absorbed}$/I$_0$ $\sim$ 0.3")
     axs[1].set_ylabel("Intensity")
     handles, labels = axs[0].get_legend_handles_labels()
-    axs[0].legend(handles, labels, frameon=False, loc='upper right')
+    axs[0].legend(handles, labels, frameon=False, loc="upper right")
     emission_ax.spines["left"].set_color("tab:blue")
     axs[0].tick_params(axis="y", color="tab:blue")
     axs[0].yaxis.label.set_color("tab:blue")
@@ -68,7 +69,7 @@ def format_figure(f, axs, emission_ax):
     axs[0].yaxis.set_ticks([])
     axs[1].yaxis.set_ticklabels([])
     axs[1].yaxis.set_ticks([])
-    axs[1].legend(loc='upper right')
+    axs[1].legend(loc="upper right")
     axs[0].text(
         0.1, 0.9, "a", transform=axs[0].transAxes, fontsize=10, fontweight="bold"
     )
@@ -78,8 +79,8 @@ def format_figure(f, axs, emission_ax):
     axs[1].text(
         0.65,
         0.3,
-        '5 fs,\n1600 mJ/cm$^2$',
-        #"780 eV,\n9490\nmJ/cm$^2$",
+        "5 fs,\n1600 mJ/cm$^2$",
+        # "780 eV,\n9490\nmJ/cm$^2$",
         transform=axs[1].transAxes,
         fontsize=8,
     )
@@ -115,6 +116,7 @@ def summed_spectra_plot(ax, data):
         facecolor="r",
         edgecolor="w",
     )
+
 
 def place_vlines(axs):
     vline_loc_list = [774.5, 776.5, 778]

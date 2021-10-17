@@ -12,6 +12,7 @@ set_plot_params.init_paper_small()
 
 EMISSION_SHIFT = 0.4  # photon energy shift from reference data
 
+
 def make_figure():
     long_data = LB51_get_cal_data.get_long_pulse_data()
     short_data = LB51_get_cal_data.get_short_pulse_data()
@@ -20,7 +21,11 @@ def make_figure():
     short_summary_data = [short_data["359"]]
     short_summary_data.extend(binned_99)
     # The below line changes the order to be in order of ascending fluence
-    short_summary_data = [short_summary_data[0], short_summary_data[2], short_summary_data[1]]
+    short_summary_data = [
+        short_summary_data[0],
+        short_summary_data[2],
+        short_summary_data[1],
+    ]
     long_summary_data = [long_data["641"]]
     long_summary_data.extend(binned_603)
     f, axs = plt.subplots(1, 2, sharex=True, sharey=True, figsize=(4, 4))
@@ -29,6 +34,7 @@ def make_figure():
     format_figure(f, axs)
     plt.savefig("manuscript_plots/2021_10_03_summary_p2.eps", dpi=600)
     plt.savefig("manuscript_plots/2021_10_03_summary_p2.png", dpi=600)
+
 
 def spectra_series_plot(ax, data_list):
     for ind, data in enumerate(data_list):
@@ -59,6 +65,7 @@ def spectra_series_plot(ax, data_list):
             handles, labels = ax.get_legend_handles_labels()
             plt.gcf().legend(handles, labels, loc=(0.38, 0.85), frameon=True)
 
+
 def format_figure(f, axs):
     axs[0].yaxis.set_ticks([])
     axs[0].xaxis.set_ticks([770, 775, 780, 785])
@@ -69,10 +76,10 @@ def format_figure(f, axs):
     texts = []
     texts.append(
         axs[0].text(
-            780.5,      #769.5
-            3.3,        # 3.2
-            '1600\nmJ/cm$^2$',
-            #"779 eV,\n1080\nmJ/cm$^2$",
+            780.5,  # 769.5
+            3.3,  # 3.2
+            "1600\nmJ/cm$^2$",
+            # "779 eV,\n1080\nmJ/cm$^2$",
             transform=axs[0].transData,
             fontsize=8,
         )
@@ -81,8 +88,8 @@ def format_figure(f, axs):
         axs[0].text(
             769.5,
             1.7,
-            '1080\nmJ/cm$^2$',
-            #"777 eV,\n1600\nmJ/cm$^2$",
+            "1080\nmJ/cm$^2$",
+            # "777 eV,\n1600\nmJ/cm$^2$",
             transform=axs[0].transData,
             fontsize=8,
         )
@@ -91,8 +98,8 @@ def format_figure(f, axs):
         axs[0].text(
             769.5,
             0.25,
-            '12\nmJ/cm$^2$',
-            #"779 eV,\n12\nmJ/cm$^2$",
+            "12\nmJ/cm$^2$",
+            # "779 eV,\n12\nmJ/cm$^2$",
             transform=axs[0].transData,
             fontsize=8,
         )
@@ -101,8 +108,8 @@ def format_figure(f, axs):
         axs[1].text(
             769.5,
             3.2,
-            '9490\nmJ/cm$^2$',
-            #"780 eV,\n9490\nmJ/cm$^2$",
+            "9490\nmJ/cm$^2$",
+            # "780 eV,\n9490\nmJ/cm$^2$",
             transform=axs[1].transData,
             fontsize=8,
         )
@@ -111,8 +118,8 @@ def format_figure(f, axs):
         axs[1].text(
             780.5,
             1.8,
-            '8950\nmJ/cm$^2$',
-            #"777 eV,\n8950\nmJ/cm$^2$",
+            "8950\nmJ/cm$^2$",
+            # "777 eV,\n8950\nmJ/cm$^2$",
             transform=axs[1].transData,
             fontsize=8,
         )
@@ -121,8 +128,8 @@ def format_figure(f, axs):
         axs[1].text(
             769.5,
             0.25,
-            '30\nmJ/cm$^2$',
-            #"781 eV,\n30\nmJ/cm$^2$",
+            "30\nmJ/cm$^2$",
+            # "781 eV,\n30\nmJ/cm$^2$",
             transform=axs[1].transData,
             fontsize=8,
         )
@@ -220,12 +227,14 @@ def format_figure(f, axs):
     axs[1].text(
         0.8, 0.94, "d", transform=axs[1].transAxes, fontsize=10, fontweight="bold"
     )
-    axs[0].set_xlabel(' ')
+    axs[0].set_xlabel(" ")
+
     def place_vlines():
         ax_list = [axs[0], axs[1]]
         vline_loc_list = [774.5, 776.5, 778]
         for ax in ax_list:
             for vline_loc in vline_loc_list:
                 ax.axvline(vline_loc, linestyle=":", color="k")
+
     place_vlines()
     plt.tight_layout()

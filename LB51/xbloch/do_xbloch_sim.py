@@ -214,6 +214,7 @@ def _get_stim_efficiency(
     stim_efficiency = 100 * stim_strength / abs_strength
     return stim_efficiency
 
+
 def _get_absorption_loss(
     phot: np.ndarray,
     intensity_difference: np.ndarray,
