@@ -5,7 +5,6 @@ __pycache__/
 *.jpg
 *.png
 .DS_Store
-*.pickle
 *.out
 *.log
 worker*
