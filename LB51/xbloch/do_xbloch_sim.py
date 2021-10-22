@@ -15,7 +15,7 @@ from LB51.xbloch import sase_sim
 
 # Simulation parameters:
 STRENGTHS = np.logspace(-1, 1, 10)  # Fluences of incident X-ray pulses (in J/cm^2)
-STRENGTHS = np.append(1e-8, STRENGTHS)
+STRENGTHS = np.append(np.logspace(-7, -2, 6), STRENGTHS)
 
 # Below two lines only for experimenting
 # STRENGTHS = np.logspace(-1, 1, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
