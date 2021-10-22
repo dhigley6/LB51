@@ -45,16 +45,17 @@ def plot():
         sim_results_5fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_5fs["stim_efficiencies"]) * EFFICIENCY_TO_AMPLIFICATION,
         color="m",
-        label="5 fs Three Level\nSimulation",
+        label="5 fs\nSimulation",
     )
     ax.set_xscale('log')
     ax.set_yscale('log')
 
+    # only plot high fluence point right now
     ax.errorbar(
-        measured["long_fluences"],
-        measured["long_efficiencies"] * EFFICIENCY_TO_AMPLIFICATION,
-        xerr=measured["long_fluences"] * FLUENCE_MEASUREMENT_ACCURACY,
-        yerr=measured["long_stds"] * EFFICIENCY_TO_AMPLIFICATION,
+        measured["long_fluences"][-1],
+        measured["long_efficiencies"][-1] * EFFICIENCY_TO_AMPLIFICATION,
+        xerr=measured["long_fluences"][-1] * FLUENCE_MEASUREMENT_ACCURACY,
+        yerr=measured["long_stds"][-1] * EFFICIENCY_TO_AMPLIFICATION,
         color="g",
         label="25 fs Expt.",
         linestyle="",
@@ -64,15 +65,31 @@ def plot():
         sim_results_25fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_25fs["stim_efficiencies"]) * EFFICIENCY_TO_AMPLIFICATION,
         color="g",
-        label="25 fs Three Level\nSimulation",
+        label="25 fs\nSimulation",
     )
 
     ax.set_xscale('log')
     ax.set_yscale('log')
     ax.set_xlabel('Fluence (mJ/cm$^2$)')
     ax.set_ylabel('Projected Stimulated RIXS Gain')
-    ax.legend(loc='best')
+    ax.legend(loc='right', frameon=False)
     ax.set_xlim((10**(-2.5), 10**(4.5)))
+    ax.axhline(1, color='k', linestyle='--')
+    ax.axhline(10**5, color='k', linestyle='--')
+    ax.text(
+        10**(-1.7),  # 769.5
+        10**(-0.7),  # 3.2
+        "Spontaneous RIXS\nIn Spectrometer",
+        transform=ax.transData,
+        fontsize=8,
+    )
+    ax.text(
+        10**(-1.7),  # 769.5
+        10**(4.3),  # 3.2
+        "Total Spontaneous\nRIXS",
+        transform=ax.transData,
+        fontsize=8,
+    )
     plt.tight_layout()
 
 def get_measurements():
