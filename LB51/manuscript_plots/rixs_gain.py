@@ -8,8 +8,8 @@ FLUENCE_MEASUREMENT_ACCURACY = 0.3  # fraction within which fluence was measured
 SPON_EFFICIENCY = 0.8
 ACCEPTANCE_ANGLE_FRACTION = 1e5
 EFFICIENCY_TO_AMPLIFICATION = (
-    SPON_EFFICIENCY * ACCEPTANCE_ANGLE_FRACTION / 1e6
-)  # (millions)
+    SPON_EFFICIENCY * ACCEPTANCE_ANGLE_FRACTION
+)
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -28,13 +28,14 @@ def plot():
         sim_results_5fs_enhanced = pickle.load(f)
     with open("LB51/xbloch/results/enhanced_25fs.pickle", "rb") as f:
         sim_results_25fs_enhanced = pickle.load(f)
-    f, axs = plt.subplots(1, 2, figsize=(3.37, 3.37))
+    f = plt.figure(figsize=(3.37, 3.37))
+    ax = plt.gca()
     l1 = axs[0].errorbar(
         measured["short_fluences"],
         measured["short_efficiencies"] * EFFICIENCY_TO_AMPLIFICATION,
         xerr=measured["short_fluences"] * FLUENCE_MEASUREMENT_ACCURACY,
         yerr=measured["short_stds"] * EFFICIENCY_TO_AMPLIFICATION,
-        color="k",
+        color="m",
         label="Expt.",
         linestyle="",
         marker="o",
@@ -42,7 +43,7 @@ def plot():
     (l2,) = axs[0].plot(
         sim_results_5fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_5fs["stim_efficiencies"]) * EFFICIENCY_TO_AMPLIFICATION,
-        color="tab:blue",
+        color="m",
         label="Three Level\nSimulation",
     )
     axs[0].set_xscale('log')
@@ -53,7 +54,7 @@ def plot():
         measured["long_efficiencies"] * EFFICIENCY_TO_AMPLIFICATION,
         xerr=measured["long_fluences"] * FLUENCE_MEASUREMENT_ACCURACY,
         yerr=measured["long_stds"] * EFFICIENCY_TO_AMPLIFICATION,
-        color="k",
+        color="g",
         label="Expt.",
         linestyle="",
         marker="o",
@@ -61,7 +62,7 @@ def plot():
     axs[1].plot(
         sim_results_25fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
         np.array(sim_results_25fs["stim_efficiencies"]) * EFFICIENCY_TO_AMPLIFICATION,
-        color="tab:blue",
+        color="g",
         label="Three Level\nSimulation",
     )
 

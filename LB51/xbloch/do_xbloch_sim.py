@@ -21,10 +21,10 @@ STRENGTHS = np.append(np.logspace(-7, -2, 6), STRENGTHS)
 # STRENGTHS = np.logspace(-1, 1, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
 # STRENGTHS = np.append(1e-8, STRENGTHS)
 
-ABS_LIMITS = (777, 779)  # Region of absorption (in eV above 778 eV)
+ABS_LIMITS = (777.5, 779)  # Region of absorption (in eV above 778 eV)
 STIM_LIMITS = (
-    775,
-    777,
+    775.5,
+    777.5,
 )  # Region of stimulated inelastic scattering (in eV above 778 eV)
 
 # where to save simulation results:
