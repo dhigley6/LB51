@@ -298,5 +298,5 @@ def make_model_system() -> LambdaBloch:
         model_system: LambdaBloch
             The model three-level system
     """
-    model_system = LambdaBloch(0, 778, 1, DIPOLE, DIPOLE, 778 / HBAR)
+    model_system = LambdaBloch(0, 778, 1.5, DIPOLE, DIPOLE, 778 / HBAR)
     return model_system
