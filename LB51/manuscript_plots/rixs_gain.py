@@ -13,6 +13,7 @@ EFFICIENCY_TO_AMPLIFICATION = (
 # starting efficiency for above factor is in %
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 
@@ -33,9 +34,9 @@ def plot():
     ax = plt.gca()
     l1 = ax.errorbar(
         measured["short_fluences"],
-        measured["short_efficiencies"] * EFFICIENCY_TO_AMPLIFICATION,
+        measured["short_efficiencies"]/100,
         xerr=measured["short_fluences"] * FLUENCE_MEASUREMENT_ACCURACY,
-        yerr=measured["short_stds"] * EFFICIENCY_TO_AMPLIFICATION,
+        yerr=measured["short_stds"]/100,
         color="m",
         label="5 fs Expt.",
         linestyle="",
@@ -43,7 +44,7 @@ def plot():
     )
     (l2,) = ax.plot(
         sim_results_5fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
-        np.array(sim_results_5fs["stim_efficiencies"]) * EFFICIENCY_TO_AMPLIFICATION,
+        np.array(sim_results_5fs["stim_efficiencies"])/100,
         color="m",
         label="5 fs\nSimulation",
     )
@@ -53,9 +54,9 @@ def plot():
     # only plot high fluence point right now
     ax.errorbar(
         measured["long_fluences"][-1],
-        measured["long_efficiencies"][-1] * EFFICIENCY_TO_AMPLIFICATION,
+        measured["long_efficiencies"][-1]/100,
         xerr=measured["long_fluences"][-1] * FLUENCE_MEASUREMENT_ACCURACY,
-        yerr=measured["long_stds"][-1] * EFFICIENCY_TO_AMPLIFICATION,
+        yerr=measured["long_stds"][-1]/100,
         color="g",
         label="25 fs Expt.",
         linestyle="",
@@ -63,7 +64,7 @@ def plot():
     )
     ax.plot(
         sim_results_25fs["fluences"] * 1e3,  # convert from J/cm^2 to mJ/cm^2
-        np.array(sim_results_25fs["stim_efficiencies"]) * EFFICIENCY_TO_AMPLIFICATION,
+        np.array(sim_results_25fs["stim_efficiencies"])/100,
         color="g",
         label="25 fs\nSimulation",
     )
@@ -74,18 +75,19 @@ def plot():
     ax.set_ylabel('Projected Stimulated RIXS Gain')
     ax.legend(loc='right', frameon=False)
     ax.set_xlim((10**(-2.5), 10**(4.5)))
-    ax.axhline(1, color='k', linestyle='--')
-    ax.axhline(10**5, color='k', linestyle='--')
+    ax.set_ylim((10**(-8.2), 1))
+    ax.axhline(0.008, color='k', linestyle='--')
+    ax.axhline((0.008*10**(-5)), color='k', linestyle='--')
     ax.text(
-        10**(-1.5),  # 769.5
-        10**(-0.7),  # 3.2
+        10**(-1.55),  # 769.5
+        10**(-7.85),  # 3.2
         "Spontaneous RIXS\nIn Spectrometer",
         transform=ax.transData,
         fontsize=8,
     )
     ax.text(
         10**(-1.7),  # 769.5
-        10**(4.3),  # 3.2
+        10**(-2.8),  # 3.2
         "Total Spontaneous\nRIXS",
         transform=ax.transData,
         fontsize=8,
@@ -93,8 +95,38 @@ def plot():
     plt.tight_layout()
     plt.savefig("manuscript_plots/2021_10_22_rixs_gain.eps", dpi=600)
     plt.savefig("manuscript_plots/2021_10_22_rixs_gain.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_22_rixs_gain.svg", dpi=600)
 
 def get_measurements():
     with open(EXPERIMENT_FILE, "rb") as f:
         measured = pickle.load(f)
     return measured
+
+def save_data():
+    measured = get_measurements()
+    sim_results_5fs = do_xbloch_sim.load_multipulse_data(5.0)
+    sim_results_25fs = do_xbloch_sim.load_multipulse_data(25.0)
+    short_exp_dict = {
+        'fluences': measured['short_fluences'],
+        'efficiencies': measured['short_efficiencies']
+    }
+    short_exp_pd = pd.DataFrame(data=short_exp_dict)
+    short_exp_pd.to_csv('../data_for_jo_gain_plot/short_experiment.csv')
+    long_exp_dict = {
+        'fluences': measured['long_fluences'],
+        'efficiencies': measured['long_efficiencies']
+    }
+    long_exp_pd = pd.DataFrame(data=long_exp_dict)
+    long_exp_pd.to_csv('../data_for_jo_gain_plot/long_experiment.csv')
+    short_simulation_dict = {
+        'fluences': sim_results_5fs['fluences'][1:],
+        'efficiencies': sim_results_5fs['stim_efficiencies'][1:]
+    }
+    short_simulation_pd = pd.DataFrame(data=short_simulation_dict)
+    short_simulation_pd.to_csv('../data_for_jo_gain_plot/short_simulation.csv')
+    long_simulation_dict = {
+        'fluences': sim_results_25fs['fluences'][1:],
+        'efficiencies': sim_results_25fs['stim_efficiencies'][1:]
+    }
+    long_simulation_pd = pd.DataFrame(data=long_simulation_dict)
+    long_simulation_pd.to_csv('../data_for_jo_gain_plot/long_simulation.csv')
