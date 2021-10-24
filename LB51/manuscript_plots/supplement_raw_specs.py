@@ -34,6 +34,11 @@ def make_figure():
     format_figure(f, axs)
     plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.eps", dpi=600)
     plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.pdf", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.ps", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.svg", dpi=600)
+
+
 
 
 def spectra_series_plot(ax, data_list):
@@ -46,16 +51,16 @@ def spectra_series_plot(ax, data_list):
         ssrl_trans = np.exp(-1 * data["sum_intact"]["ssrl_absorption"])
         lin_sam_spec = no_sam_spec * ssrl_trans
         offset = ind * 1.5
-        ax.plot(phot, offset + no_sam_spec, "k--", label="Incident")
-        ax.plot(phot, offset + sam_spec, "k", label="Co/Pd")
-        ax.plot(phot, offset + lin_sam_spec, "k:", label="Estimated\nLinear Co/Pd")
+        ax.plot(phot, offset + no_sam_spec, c='k', label="Incident", linewidth=0.3)
+        ax.plot(phot, offset + sam_spec, c='k', label="Co/Pd", linewidth=0.3)
+        ax.plot(phot, offset + lin_sam_spec, c='k', label="Estimated\nLinear Co/Pd", linewidth=0.3)
         ax.fill_between(
             phot,
             lin_sam_spec + offset,
             sam_spec + offset,
             where=(exc_spec > 0),
             facecolor="b",
-            edgecolor="w",
+            edgecolor="b",
         )
         ax.fill_between(
             phot,
@@ -63,7 +68,7 @@ def spectra_series_plot(ax, data_list):
             sam_spec + offset,
             where=(exc_spec < 0),
             facecolor="r",
-            edgecolor="w",
+            edgecolor="r",
         )
         """
         ax.fill_between(

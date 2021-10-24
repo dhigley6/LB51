@@ -77,7 +77,7 @@ def plot():
     ax.axhline(1, color='k', linestyle='--')
     ax.axhline(10**5, color='k', linestyle='--')
     ax.text(
-        10**(-1.7),  # 769.5
+        10**(-1.5),  # 769.5
         10**(-0.7),  # 3.2
         "Spontaneous RIXS\nIn Spectrometer",
         transform=ax.transData,
@@ -91,6 +91,8 @@ def plot():
         fontsize=8,
     )
     plt.tight_layout()
+    plt.savefig("manuscript_plots/2021_10_22_rixs_gain.eps", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_22_rixs_gain.png", dpi=600)
 
 def get_measurements():
     with open(EXPERIMENT_FILE, "rb") as f:
