@@ -1,4 +1,4 @@
-"""Make raw data plots corresponding to summary figure of main text
+"""Make second part of experimental data summary figure
 """
 
 import numpy as np
@@ -11,6 +11,9 @@ from LB51.manuscript_plots import set_plot_params
 set_plot_params.init_paper_small()
 
 EMISSION_SHIFT = 0.4  # photon energy shift from reference data
+
+
+
 
 
 def make_figure():
@@ -32,12 +35,9 @@ def make_figure():
     spectra_series_plot(axs[0], short_summary_data)
     spectra_series_plot(axs[1], long_summary_data)
     format_figure(f, axs)
-    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.eps", dpi=600)
-    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.png", dpi=600)
-    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.pdf", dpi=600)
-    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.ps", dpi=600)
-    plt.savefig("manuscript_plots/2021_10_11_supplement_raw_specs.svg", dpi=600)
-
+    plt.savefig("manuscript_plots/2021_10_03_summary_p2.eps", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_03_summary_p2.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_10_03_summary_p2.svg", dpi=600)
 
 
 
@@ -47,36 +47,15 @@ def spectra_series_plot(ax, data_list):
     for ind, data in enumerate(data_list):
         phot = data["sum_intact"]["phot"]
         norm = np.amax(data["sum_intact"]["no_sam_spec"])
-        sam_spec = data["sum_intact"]["sam_spec"] / norm
-        no_sam_spec = data["sum_intact"]["no_sam_spec"] / norm
+        no_sam_spec = data["sum_intact"]["no_sam_spec"]*np.exp(-1*ssrl_nonres_absorption) / norm
         exc_spec = data["sum_intact"]["exc_sam_spec"] / norm
-        ssrl_trans = np.exp(-1 * data["sum_intact"]["ssrl_absorption"])
-        lin_sam_spec = no_sam_spec * ssrl_trans
         offset = ind * 1.5
-        ax.plot(phot, offset + no_sam_spec, c='k', label="Incident", linewidth=0.3)
-        ax.plot(phot, offset + sam_spec, c='k', label="Co/Pd", linewidth=0.3)
-        ax.plot(phot, offset + lin_sam_spec, c='k', label="Estimated\nLinear Co/Pd", linewidth=0.3)
-        ax.fill_between(
-            phot,
-            lin_sam_spec + offset,
-            sam_spec + offset,
-            where=(exc_spec > 0),
-            facecolor="b",
-            edgecolor="b",
-        )
-        ax.fill_between(
-            phot,
-            lin_sam_spec + offset,
-            sam_spec + offset,
-            where=(exc_spec < 0),
-            facecolor="r",
-            edgecolor="r",
-        )
-        """
+        ax.plot(phot, offset + exc_spec, color="k", label="Nonlin./Lin.")
+        ax.plot(phot, offset + no_sam_spec, "k--", label="Lin.")
         ax.fill_between(
             phot,
             offset + np.zeros_like(phot),
-            offset + exc_spec * 5,
+            offset + exc_spec,
             where=(exc_spec > 0),
             facecolor="b",
             edgecolor="w",
@@ -84,15 +63,14 @@ def spectra_series_plot(ax, data_list):
         ax.fill_between(
             phot,
             offset + np.zeros_like(phot),
-            offset + exc_spec * 5,
+            offset + exc_spec,
             where=(exc_spec < 0),
             facecolor="r",
             edgecolor="w",
         )
-        """
         if ind == 0:
             handles, labels = ax.get_legend_handles_labels()
-            plt.gcf().legend(handles, labels, loc=(0.38, 0.82), frameon=True)
+            plt.gcf().legend(handles, labels, loc=(0.38, 0.85), frameon=True)
 
 
 def format_figure(f, axs):
@@ -183,6 +161,66 @@ def format_figure(f, axs):
             backgroundcolor="w",
         )
     )
+    texts.append(
+        axs[0].text(
+            774.5,
+            -0.35,
+            r"$\alpha$",
+            transform=axs[0].transData,
+            fontsize=8,
+            horizontalalignment="center",
+        )
+    )
+    texts.append(
+        axs[0].text(
+            776.5,
+            -0.35,
+            r"$\beta$",
+            transform=axs[0].transData,
+            fontsize=8,
+            horizontalalignment="center",
+        )
+    )
+    texts.append(
+        axs[0].text(
+            778,
+            -0.35,
+            r"$\gamma$",
+            transform=axs[0].transData,
+            fontsize=8,
+            horizontalalignment="center",
+        )
+    )
+    texts.append(
+        axs[1].text(
+            774.5,
+            -0.35,
+            r"$\alpha$",
+            transform=axs[1].transData,
+            fontsize=8,
+            horizontalalignment="center",
+        )
+    )
+    texts.append(
+        axs[1].text(
+            776.5,
+            -0.35,
+            r"$\beta$",
+            transform=axs[1].transData,
+            fontsize=8,
+            horizontalalignment="center",
+        )
+    )
+    texts.append(
+        axs[1].text(
+            778,
+            -0.35,
+            r"$\gamma$",
+            transform=axs[1].transData,
+            fontsize=8,
+            horizontalalignment="center",
+        )
+    )
     for text in texts:
         text.set_path_effects(
             [
@@ -191,10 +229,19 @@ def format_figure(f, axs):
             ]
         )
     axs[0].text(
-        0.1, 0.94, "a", transform=axs[0].transAxes, fontsize=10, fontweight="bold"
+        0.1, 0.94, "c", transform=axs[0].transAxes, fontsize=10, fontweight="bold"
     )
     axs[1].text(
-        0.8, 0.94, "b", transform=axs[1].transAxes, fontsize=10, fontweight="bold"
+        0.8, 0.94, "d", transform=axs[1].transAxes, fontsize=10, fontweight="bold"
     )
     axs[0].set_xlabel(" ")
+
+    def place_vlines():
+        ax_list = [axs[0], axs[1]]
+        vline_loc_list = [774.5, 776.5, 778]
+        for ax in ax_list:
+            for vline_loc in vline_loc_list:
+                ax.axvline(vline_loc, linestyle=":", color="k")
+
+    place_vlines()
     plt.tight_layout()
