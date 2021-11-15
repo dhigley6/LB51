@@ -24,6 +24,7 @@ def make_figure():
     format_figure(f, axs)
     plt.savefig("manuscript_plots/2021_11_02_combined.eps", dpi=600)
     plt.savefig("manuscript_plots/2021_11_02_combined.png", dpi=600)
+    plt.savefig("manuscript_plots/2021_11_02_combined.svg", dpi=600)
 
 
 def spectra_series_plot(ax, data_list):
