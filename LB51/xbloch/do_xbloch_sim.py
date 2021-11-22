@@ -16,6 +16,7 @@ from LB51.xbloch import sase_sim
 # Simulation parameters:
 STRENGTHS = np.logspace(-1, 1.5, 10)  # Fluences of incident X-ray pulses (in J/cm^2)
 STRENGTHS = np.append(np.logspace(-7, -2, 6), STRENGTHS)
+#STRENGTHS = np.logspace(-5, 1.5, 3)     # Temporary setting of strengths for two color experiment
 
 # Below two lines only for experimenting
 # STRENGTHS = np.logspace(-1, 1, 3)  # Fluences of incident X-ray pulses (in J/cm^2)
@@ -30,6 +31,9 @@ STIM_LIMITS = (
 # where to save simulation results:
 SASE_RESULTS_FILE_START = "LB51/xbloch/results/multipulse_sase_"
 GAUSS_RESULTS_FILE_START = "LB51/xbloch/results/gauss_"
+TWO_COLOR_FILE = "LB51/xbloch/results/two_color.pickle"
+SINGLE_FLATTOP_FILE = "LB51/xbloch/results/single_flattop.pickle"
+
 
 N_PULSES_MANUSCRIPT = 20  # number of pulses to simulate for manuscript plots
 
@@ -43,6 +47,37 @@ def run_manuscript_simulations():
     simulate_multipulse_sase_series(25.0, N_PULSES_MANUSCRIPT, times_25fs)
     print("Completed 25 fs simulations")
 
+def simulate_twocolor_case(duration: float = 25):
+    times = np.linspace(-50, 100, int(5e4))
+    zero_offset = np.ones_like(times)
+    inelastic_offset = zero_offset*np.exp(-1j*2*times/xbloch2020.HBAR)
+    E_in = zero_offset+inelastic_offset
+    temporal_envelope = sase_sim._calculate_envelope(times, duration, 0)
+    E_in = E_in*np.sqrt(temporal_envelope)
+    E_in_list = [sase_sim._normalize_pulse(times, E_in, 1)]
+    summary_result = simulate_multipulse_series(times, E_in_list)
+    with open(TWO_COLOR_FILE, "wb") as f:
+        pickle.dump(summary_result, f)
+    return summary_result
+
+def load_twocolor_case():
+    with open(TWO_COLOR_FILE, "rb") as f:
+        data = pickle.load(f)
+    return data
+
+def simulate_single_flattop_case():
+    times = np.linspace(-50, 100, int(5e4))
+    pulse = ((times >= 0) & (times <= 0.41)).astype(float)
+    E_in_list = [sase_sim._normalize_pulse(times, pulse, 1)]
+    summary_result = simulate_multipulse_series(times, E_in_list)
+    with open(SINGLE_FLATTOP_FILE, 'wb') as f:
+        pickle.dump(summary_result, f)
+    return summary_result
+
+def load_single_flattop_case():
+    with open(SINGLE_FLATTOP_FILE, "rb") as f:
+        data = pickle.load(f)
+    return data
 
 def simulate_gaussian_case(duration: float = 0.5):
     """Simulate interaction of Gaussian pulses with 3-level-system vs fluence
