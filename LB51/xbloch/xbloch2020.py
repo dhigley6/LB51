@@ -25,7 +25,7 @@ DENSITY = (
 # also in stohr/scherz prl
 
 # Model material parameters:
-DIPOLE = (4.04e-12 + 0j) * 1.602e-19  # Dipole matrix element to use   (C*m)
+DIPOLE = ((4.04e-12 + 0j) * 1.602e-19)*np.sqrt(2)  # Dipole matrix element to use   (C*m)
 Co_L3_BROAD = 0.43  # Natural lifetime of Co 2p_{3/2} core hole
 # Thickness of sample:
 # THICKNESS = 1E-9    # thickness of sample in m
