@@ -40,15 +40,15 @@ N_PULSES_MANUSCRIPT = 20  # number of pulses to simulate for manuscript plots
 
 def run_manuscript_simulations():
     """Run simulations to be used in manuscript"""
-    times_5fs = np.linspace(-25, 50, int(5e4))
+    times_5fs = np.linspace(-25, 50, int(10e4))
     simulate_multipulse_sase_series(5.0, N_PULSES_MANUSCRIPT, times_5fs)
     print("Completed 5 fs simulations")
-    times_25fs = np.linspace(-50, 100, int(5e4))
+    times_25fs = np.linspace(-50, 100, int(10e4))
     simulate_multipulse_sase_series(25.0, N_PULSES_MANUSCRIPT, times_25fs)
     print("Completed 25 fs simulations")
 
 def simulate_twocolor_case(duration: float = 25):
-    times = np.linspace(-50, 100, int(5e4))
+    times = np.linspace(-50, 100, int(10e4))
     zero_offset = np.ones_like(times)
     inelastic_offset = zero_offset*np.exp(-1j*2*times/xbloch2020.HBAR)
     E_in = zero_offset+inelastic_offset
@@ -66,7 +66,7 @@ def load_twocolor_case():
     return data
 
 def simulate_single_flattop_case():
-    times = np.linspace(-50, 100, int(5e4))
+    times = np.linspace(-50, 100, int(10e4))
     pulse = ((times >= 0) & (times <= 0.41)).astype(float)
     E_in_list = [sase_sim._normalize_pulse(times, pulse, 1)]
     summary_result = simulate_multipulse_series(times, E_in_list)
