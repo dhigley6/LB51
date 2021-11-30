@@ -119,14 +119,14 @@ def save_data():
     long_exp_pd = pd.DataFrame(data=long_exp_dict)
     long_exp_pd.to_csv('../data_for_jo_gain_plot/long_experiment.csv')
     short_simulation_dict = {
-        'fluences': sim_results_5fs['fluences'][1:],
-        'efficiencies': sim_results_5fs['stim_efficiencies'][1:]
+        'fluences': sim_results_5fs['fluences'][1:-1],
+        'efficiencies': sim_results_5fs['stim_efficiencies'][1:-1]
     }
     short_simulation_pd = pd.DataFrame(data=short_simulation_dict)
     short_simulation_pd.to_csv('../data_for_jo_gain_plot/short_simulation.csv')
     long_simulation_dict = {
-        'fluences': sim_results_25fs['fluences'][1:],
-        'efficiencies': sim_results_25fs['stim_efficiencies'][1:]
+        'fluences': sim_results_25fs['fluences'][1:-1],
+        'efficiencies': sim_results_25fs['stim_efficiencies'][1:-1]
     }
     long_simulation_pd = pd.DataFrame(data=long_simulation_dict)
     long_simulation_pd.to_csv('../data_for_jo_gain_plot/long_simulation.csv')
