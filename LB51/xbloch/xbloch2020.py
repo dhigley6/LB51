@@ -98,10 +98,14 @@ class LambdaBloch:
         self.gamma = np.zeros((3, 3, 3, 3))
         self.gamma[0, 0, 1, 1] = -1 * gamma_a
         self.gamma[1, 1, 1, 1] = gamma_a
+        self.gamma[0, 0, 2, 2] = -1 * gamma_a
+        self.gamma[2, 2, 2, 2] = gamma_a
         self.gamma[0, 1, 0, 1] = gamma_a / 2
         self.gamma[1, 0, 1, 0] = gamma_a / 2
-        self.gamma[1, 2, 1, 2] = gamma_a / 2
-        self.gamma[2, 1, 2, 1] = gamma_a / 2
+        self.gamma[1, 2, 1, 2] = gamma_a
+        self.gamma[2, 1, 2, 1] = gamma_a
+        self.gamma[0, 2, 0, 2] = gamma_a / 2
+        self.gamma[2, 0, 2, 0] = gamma_a / 2
         self.t = 0
         self.polarization = 0
         self.history = {
